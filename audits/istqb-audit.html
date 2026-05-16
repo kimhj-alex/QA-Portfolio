@@ -839,7 +839,7 @@
             <span class="tag">macOS · Brave · istqb.org</span>
           </div>
           <p class="finding-summary">
-            The ISTQB website includes a third-party accessibility widget (Ally by Elementor) accessible via a small blue button in the bottom left corner of the page. The widget itself is comprehensive — offering text and visual adjustments, orientation options, and personalizations based on user needs. However, the button that opens it has no aria-label, no tooltip, and no descriptive text of any kind. The only visual affordance is a slight size increase on hover. Critically, the button is not reachable via keyboard navigation — tabbing through the page skips it entirely. Users who rely on keyboard navigation or assistive technology cannot access the widget at all. An accessibility tool that is itself inaccessible to the users who need it most is a fundamental contradiction.
+            The ISTQB website includes a third-party accessibility widget (Ally by Elementor) accessible via a small blue button in the bottom left corner of the page. The widget button renders only in Brave browser and is entirely absent in Safari, Chrome, and Firefox — meaning the majority of users have no access to any accessibility options regardless of how they navigate. The widget itself is comprehensive — offering text and visual adjustments, orientation options, and personalizations based on user needs. However, the button that opens it has no aria-label, no tooltip, and no descriptive text of any kind. The only visual affordance is a slight size increase on hover. Critically, the button is not reachable via keyboard navigation — tabbing through the page skips it entirely. Users who rely on keyboard navigation or assistive technology cannot access the widget at all. An accessibility tool that is itself inaccessible to the users who need it most is a fundamental contradiction.
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>
@@ -847,9 +847,10 @@
               <li><span class="step-num">1.</span><span>Navigate to istqb.org</span></li>
               <li><span class="step-num">2.</span><span>Attempt to locate the accessibility widget button by scanning the page — observe it is a small blue button with a white gingerbread-style person icon in the bottom left corner</span></li>
               <li><span class="step-num">3.</span><span>Hover over the button — observe it grows slightly larger with no tooltip or label appearing</span></li>
-              <li><span class="step-num">4.</span><span>Attempt to navigate to the button using the keyboard Tab key</span></li>
-              <li><span class="step-num">5.</span><span>Observe: keyboard focus skips the button entirely — it is unreachable without a mouse</span></li>
-              <li><span class="step-num">6.</span><span>Click the button with a mouse — observe a full accessibility options panel opens with text, visual, and orientation settings</span></li>
+              <li><span class="step-num">4.</span><span>Repeat in Safari, Chrome, and Firefox — observe the accessibility button does not appear at all in any of these browsers.</span></li>
+              <li><span class="step-num">5.</span><span>Attempt to navigate to the button using the keyboard Tab key</span></li>
+              <li><span class="step-num">6.</span><span>Observe: keyboard focus skips the button entirely — it is unreachable without a mouse</span></li>
+              <li><span class="step-num">7.</span><span>Click the button with a mouse — observe a full accessibility options panel opens with text, visual, and orientation settings</span></li>
             </ol>
           </div>
           <div class="finding-block">
@@ -858,7 +859,7 @@
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
-            <p>The button has no aria-label, no tooltip, and no descriptive text. It cannot be reached via keyboard navigation. Users relying on assistive technology or keyboard-only navigation have no way to discover or access the accessibility widget.</p>
+            <p>The button has no aria-label, no tooltip, and no descriptive text. It cannot be reached via keyboard navigation. Users relying on assistive technology or keyboard-only navigation have no way to discover or access the accessibility widget. The button does not render at all in Safari, Chrome, or Firefox — users on these browsers have no access to the accessibility widget.</p>
           </div>
         </div>
       </div>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bug Reports — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 80px 48px 64px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: end;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 12px;
+    }
+
+    .page-header-left h1 {
+      font-family: var(--serif);
+      font-size: clamp(48px, 6vw, 88px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-header-left h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--grey);
+      font-size: 0.6em;
+      display: block;
+      margin-top: 8px;
+      letter-spacing: 0;
+    }
+
+    .page-header-right p {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--grey);
+      max-width: 440px;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-right: 4px;
+    }
+
+    .filter-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--grey);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover { border-color: var(--black); color: var(--black); }
+    .filter-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+    .filter-btn.active-rust { background: var(--rust); color: var(--white); border-color: var(--rust); }
+
+    /* ── BUG LIST ── */
+    .bug-list {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bug-row {
+      display: grid;
+      grid-template-columns: 72px 1fr 120px 110px 110px 48px;
+      align-items: center;
+      padding: 22px 48px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+      gap: 16px;
+    }
+
+    .bug-row:hover { background: #f5f3ef; }
+    .bug-row:hover .bug-arrow { color: var(--rust); }
+
+    /* table header row */
+    .bug-list-header {
+      display: grid;
+      grid-template-columns: 72px 1fr 120px 110px 110px 48px;
+      align-items: center;
+      padding: 12px 48px;
+      border-bottom: 2px solid var(--border);
+      gap: 16px;
+      background: var(--white);
+    }
+
+    .bug-list-header span {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    .bug-index {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      letter-spacing: 0.06em;
+    }
+
+    .bug-title {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    .bug-title span {
+      display: block;
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--grey);
+      margin-top: 2px;
+      font-family: var(--mono);
+      letter-spacing: 0.04em;
+    }
+
+    .bug-platform {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    .sev-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .sev-high   { border-color: var(--rust); color: var(--rust); }
+    .sev-medium { border-color: #d4a800; color: #a07d00; }
+    .sev-low    { border-color: #5a9e6f; color: #3a7a52; }
+
+    .bug-arrow {
+      font-size: 16px;
+      color: var(--border);
+      text-align: right;
+      transition: color 0.15s;
+    }
+
+    /* hidden row when filtered */
+    .bug-row.hidden { display: none; }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-cell {
+      padding: 36px 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-cell:last-child { border-right: none; }
+
+    .stat-number {
+      font-family: var(--serif);
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-number span { color: var(--rust); }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+
+    .footer-right {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header { animation: fadeUp 0.5s ease both; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header { grid-template-columns: 1fr; padding: 48px 24px 40px; gap: 24px; }
+      .filter-bar { padding: 16px 24px; }
+      .bug-list-header { display: none; }
+      .bug-row { grid-template-columns: 56px 1fr auto 32px; padding: 18px 24px; gap: 12px; }
+      .bug-platform { display: none; }
+      .bug-row .sev-badge:first-of-type { display: none; }
+      .stats-strip { grid-template-columns: 1fr 1fr; }
+      .stat-cell { padding: 24px; }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .stat-cell:nth-child(3) { border-top: 1px solid var(--border); }
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="audits.html">Audits</a></li>
+      <li><a href="bug-reports.html" class="active">Bug Reports</a></li>
+      <li><a href="resume.html">Resume</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <p class="section-label">Individual Findings</p>
+      <h1>Bug<br>Reports
+        <em>14 findings · 9 platforms</em>
+      </h1>
+    </div>
+    <div class="page-header-right">
+      <p>Standalone findings from across the tools I use daily — social platforms, publishing tools, productivity apps, and developer tools. Each documented in full Jira-style format with steps to reproduce, expected vs actual behavior, and suggested fixes.</p>
+    </div>
+  </header>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <div class="stat-number">14<span>+</span></div>
+      <div class="stat-label">Total Findings</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">5<span>+</span></div>
+      <div class="stat-label">High Severity</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">9<span>+</span></div>
+      <div class="stat-label">Platforms Tested</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Device Types</div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="filterReports('all', this)">All</button>
+    <button class="filter-btn" onclick="filterReports('high', this)">High</button>
+    <button class="filter-btn" onclick="filterReports('medium', this)">Medium</button>
+    <button class="filter-btn" onclick="filterReports('low', this)">Low</button>
+    <button class="filter-btn" onclick="filterReports('mobile', this)">Mobile</button>
+    <button class="filter-btn" onclick="filterReports('web', this)">Web</button>
+    <button class="filter-btn" onclick="filterReports('cross-browser', this)">Cross-Browser</button>
+  </div>
+
+  <!-- BUG LIST -->
+  <div class="bug-list">
+
+    <div class="bug-list-header">
+      <span>ID</span>
+      <span>Finding</span>
+      <span>Platform</span>
+      <span>Severity</span>
+      <span>Priority</span>
+      <span></span>
+    </div>
+
+    <a href="bug-reports/br-001-instagram.html" class="bug-row" data-sev="high" data-platform="mobile">
+      <span class="bug-index">BR-001</span>
+      <div class="bug-title">Ad Pricing Information Incomplete on Mobile
+        <span>Instagram</span>
+      </div>
+      <span class="bug-platform">Mobile · iOS</span>
+      <span class="sev-badge sev-high">High</span>
+      <span class="sev-badge sev-high">High</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-002.html" class="bug-row" data-sev="medium" data-platform="mobile">
+      <span class="bug-index">BR-002</span>
+      <div class="bug-title">Silent Follow Restriction on New Accounts
+        <span>TikTok</span>
+      </div>
+      <span class="bug-platform">Mobile · iOS</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-003.html" class="bug-row" data-sev="medium" data-platform="web">
+      <span class="bug-index">BR-003</span>
+      <div class="bug-title">Undocumented Desktop-Only Limitation for Delegation
+        <span>Gmail</span>
+      </div>
+      <span class="bug-platform">Web</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-004.html" class="bug-row" data-sev="low" data-platform="web">
+      <span class="bug-index">BR-004</span>
+      <div class="bug-title">Form Email Threading with Hidden Workaround
+        <span>Squarespace / Gmail</span>
+      </div>
+      <span class="bug-platform">Web</span>
+      <span class="sev-badge sev-low">Low</span>
+      <span class="sev-badge sev-low">Low</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-005.html" class="bug-row" data-sev="low" data-platform="web">
+      <span class="bug-index">BR-005</span>
+      <div class="bug-title">Missing Category for Wireless Earbud Cases
+        <span>Etsy</span>
+      </div>
+      <span class="bug-platform">Web</span>
+      <span class="sev-badge sev-low">Low</span>
+      <span class="sev-badge sev-low">Low</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-006.html" class="bug-row" data-sev="medium" data-platform="web">
+      <span class="bug-index">BR-006</span>
+      <div class="bug-title">Vague Category Conflict Warning
+        <span>Amazon KDP</span>
+      </div>
+      <span class="bug-platform">Web</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-007.html" class="bug-row" data-sev="high" data-platform="web">
+      <span class="bug-index">BR-007</span>
+      <div class="bug-title">Inconsistent Music Detection, No Manual Override
+        <span>YouTube Studio</span>
+      </div>
+      <span class="bug-platform">Web</span>
+      <span class="sev-badge sev-high">High</span>
+      <span class="sev-badge sev-high">High</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-008.html" class="bug-row" data-sev="low" data-platform="web">
+      <span class="bug-index">BR-008</span>
+      <div class="bug-title">No Date Jump Navigation
+        <span>Google Calendar</span>
+      </div>
+      <span class="bug-platform">Web</span>
+      <span class="sev-badge sev-low">Low</span>
+      <span class="sev-badge sev-low">Low</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-009.html" class="bug-row" data-sev="high" data-platform="cross-browser">
+      <span class="bug-index">BR-009</span>
+      <div class="bug-title">Broken UI + Date Picker Defaults to Year 2160
+        <span>LinkedIn on Brave</span>
+      </div>
+      <span class="bug-platform">Cross-Browser</span>
+      <span class="sev-badge sev-high">High</span>
+      <span class="sev-badge sev-high">High</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-010.html" class="bug-row" data-sev="low" data-platform="mobile">
+      <span class="bug-index">BR-010</span>
+      <div class="bug-title">Stale Relative Day Label vs. App
+        <span>iPhone Clock Widget</span>
+      </div>
+      <span class="bug-platform">Mobile · iOS</span>
+      <span class="sev-badge sev-low">Low</span>
+      <span class="sev-badge sev-low">Low</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-011.html" class="bug-row" data-sev="medium" data-platform="web">
+      <span class="bug-index">BR-011</span>
+      <div class="bug-title">No Obvious PDF Download for Glossary
+        <span>ISTQB Website</span>
+      </div>
+      <span class="bug-platform">Web</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-012.html" class="bug-row" data-sev="medium" data-platform="web">
+      <span class="bug-index">BR-012</span>
+      <div class="bug-title">Known Bugs in Self-Developed App
+        <span>Room Planner App</span>
+      </div>
+      <span class="bug-platform">Web App</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-013.html" class="bug-row" data-sev="medium" data-platform="mobile">
+      <span class="bug-index">BR-013</span>
+      <div class="bug-title">Invisible Business Account Delegation Feature
+        <span>Instagram</span>
+      </div>
+      <span class="bug-platform">Mobile · iOS</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-medium">Medium</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+    <a href="bug-reports/br-014.html" class="bug-row" data-sev="high" data-platform="web">
+      <span class="bug-index">BR-014</span>
+      <div class="bug-title">Accessibility Widget Button Has No Aria-Label or Keyboard Focus
+        <span>ISTQB Website</span>
+      </div>
+      <span class="bug-platform">Web</span>
+      <span class="sev-badge sev-high">High</span>
+      <span class="sev-badge sev-high">High</span>
+      <span class="bug-arrow">→</span>
+    </a>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="resume.html">Resume</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    function filterReports(type, btn) {
+      // Update active button
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const rows = document.querySelectorAll('.bug-row');
+      rows.forEach(row => {
+        const sev = row.dataset.sev;
+        const platform = row.dataset.platform;
+
+        if (type === 'all') {
+          row.classList.remove('hidden');
+        } else if (type === 'high' || type === 'medium' || type === 'low') {
+          row.classList.toggle('hidden', sev !== type);
+        } else {
+          row.classList.toggle('hidden', platform !== type);
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

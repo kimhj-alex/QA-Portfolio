@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Usability Audit — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      min-height: 280px;
+    }
+
+    .page-header-left {
+      padding: 64px 48px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb a {
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--rust); }
+    .breadcrumb span { color: var(--rust); margin: 0 8px; }
+
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 4vw, 60px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--grey);
+      margin-top: 8px;
+    }
+
+    .page-header-meta {
+      margin-top: 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-header-right {
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ── AUDIT META TABLE ── */
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .meta-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-table tr:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-table td {
+      padding: 12px 0;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    .meta-table td:first-child {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      width: 140px;
+      padding-right: 16px;
+    }
+
+    .meta-table td:last-child {
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--black);
+      padding: 12px 24px;
+      text-decoration: none;
+      transition: background 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .download-btn:hover { background: var(--rust); }
+
+    /* ── SUMMARY TABLE ── */
+    .summary-section {
+      border-bottom: 1px solid var(--border);
+      padding: 48px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .summary-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border);
+      background: var(--white);
+    }
+
+    .summary-table td {
+      padding: 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .summary-table tr:hover td { background: #f5f3ef; }
+
+    .summary-table td:first-child {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      white-space: nowrap;
+      width: 80px;
+    }
+
+    .sev-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .sev-high   { border-color: var(--rust); color: var(--rust); }
+    .sev-medium { border-color: #d4a800; color: #a07d00; }
+    .sev-low    { border-color: #5a9e6f; color: #3a7a52; }
+
+    .status-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    /* ── FINDINGS ── */
+    .findings-section {
+      padding: 0;
+    }
+
+    .findings-header {
+      padding: 48px 48px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 32px 48px;
+      display: grid;
+      grid-template-columns: 80px 1fr auto auto;
+      align-items: center;
+      gap: 24px;
+      text-align: left;
+      transition: background 0.15s;
+    }
+
+    .finding-trigger:hover { background: #f5f3ef; }
+
+    .finding-id {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--rust);
+      letter-spacing: 0.08em;
+    }
+
+    .finding-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .finding-title {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--black);
+      text-align: left;
+    }
+
+    .finding-area {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    .finding-chevron {
+      font-size: 18px;
+      color: var(--grey);
+      transition: transform 0.3s ease, color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .finding.open .finding-chevron {
+      transform: rotate(180deg);
+      color: var(--rust);
+    }
+
+    /* ── FINDING BODY ── */
+    .finding-body {
+      display: none;
+      padding: 0 48px 48px;
+      border-top: 1px solid var(--border);
+      background: #f9f8f6;
+    }
+
+    .finding.open .finding-body { display: block; }
+
+    .finding-body-inner {
+      max-width: 800px;
+      padding-top: 40px;
+    }
+
+    .finding-summary {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding-block {
+      margin-bottom: 36px;
+    }
+
+    .finding-block-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 12px;
+    }
+
+    .finding-block p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+    }
+
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .steps-list li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--black);
+    }
+
+    .step-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      margin-top: 3px;
+    }
+
+    .finding-meta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .notes-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--rust);
+      padding: 20px 24px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--grey);
+    }
+
+    /* ── TAG ── */
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+    }
+
+    .tag.accent { color: var(--rust); border-color: var(--rust); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+
+    .footer-right {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header-left { animation: fadeUp 0.5s ease both; }
+    .page-header-right { animation: fadeUp 0.5s ease both 0.15s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+
+      .page-header { grid-template-columns: 1fr; }
+
+      .page-header-left {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 40px 24px;
+      }
+
+      .page-header-right { padding: 40px 24px; }
+
+      .summary-section { padding: 32px 24px; }
+
+      .finding-trigger {
+        grid-template-columns: 60px 1fr auto;
+        padding: 24px;
+        gap: 16px;
+      }
+
+      .finding-trigger .sev-badge { display: none; }
+
+      .finding-body { padding: 0 24px 32px; }
+      .findings-header { padding: 32px 24px 24px; }
+
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../audits.html" class="active">Audits</a></li>
+      <li><a href="../bug-reports.html">Bug Reports</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <div>
+        <p class="breadcrumb">
+          <a href="../audits.html">Audits</a>
+          <span>→</span>
+          Audit 01
+        </p>
+        <h1 class="page-title">GitHub</h1>
+        <p class="page-subtitle">Usability Audit</p>
+      </div>
+      <div class="page-header-meta">
+        <span class="tag accent">4 Findings</span>
+        <span class="tag">Usability</span>
+        <span class="tag">Discoverability</span>
+        <span class="tag">Cross-Browser</span>
+      </div>
+    </div>
+
+    <div class="page-header-right">
+      <table class="meta-table">
+        <tr>
+          <td>Tester</td>
+          <td>Hyeji Kim (Alex)</td>
+        </tr>
+        <tr>
+          <td>Date</td>
+          <td>2026</td>
+        </tr>
+        <tr>
+          <td>Platform</td>
+          <td>GitHub Web (github.com)</td>
+        </tr>
+        <tr>
+          <td>Environment</td>
+          <td>macOS · Brave · Safari</td>
+        </tr>
+        <tr>
+          <td>Scope</td>
+          <td>File management, repository settings, custom domain setup</td>
+        </tr>
+        <tr>
+          <td>Total Findings</td>
+          <td>4</td>
+        </tr>
+      </table>
+      <a href="#" class="download-btn">↓ Download PDF</a>
+    </div>
+  </header>
+
+  <!-- SUMMARY OF FINDINGS -->
+  <section class="summary-section">
+    <p class="section-label">Summary of Findings</p>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Severity</th>
+          <th>Priority</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>GH-001</td>
+          <td>Folder creation requires prior knowledge — no UI affordance exists</td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>GH-002</td>
+          <td>GitHub Pages deployment provides no real-time feedback or propagation transparency</td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>GH-003</td>
+          <td>Delete button inaccessible on Brave — cross-browser issue undisclosed</td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>GH-004</td>
+          <td>TTL field undocumented in custom domain DNS setup</td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- FINDINGS -->
+  <section class="findings-section">
+    <div class="findings-header">
+      <p class="section-label">Individual Findings</p>
+    </div>
+
+    <!-- GH-001 -->
+    <div class="finding" id="gh-001">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GH-001</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Folder creation requires prior knowledge — no UI affordance exists</span>
+          <span class="finding-area">Repository file management</span>
+        </div>
+        <span class="sev-badge sev-medium">Medium</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-medium">Severity: Medium</span>
+            <span class="sev-badge sev-medium">Priority: Medium</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">macOS · Brave · github.com</span>
+          </div>
+          <p class="finding-summary">
+            Users cannot create folders through any visible UI control. The only method requires typing a slash character inside a filename field — a convention with no tooltip, label, or hint anywhere in the interface. Discovered only after consulting an external tool (ChatGPT). New or non-technical users have no way to discover this without leaving the platform entirely.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Navigate to any repository on github.com</span></li>
+              <li><span class="step-num">2.</span><span>Click Add file → Create new file</span></li>
+              <li><span class="step-num">3.</span><span>Attempt to create a folder to organize repository files</span></li>
+              <li><span class="step-num">4.</span><span>Search the interface for a folder creation button, menu option, or any visible UI control</span></li>
+              <li><span class="step-num">5.</span><span>No control exists — method only discovered via external search (ChatGPT)</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>A visible affordance (button, tooltip, or placeholder text) indicates how to create folders within a repository.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>No folder creation UI exists. The only method — typing a slash in the filename field — is entirely undisclosed in the interface. Users who don't already know this cannot proceed without external help.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GH-002 -->
+    <div class="finding" id="gh-002">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GH-002</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">GitHub Pages deployment provides no real-time feedback or propagation transparency</span>
+          <span class="finding-area">File upload · Repository management</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="sev-badge sev-high">Priority: High</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">macOS · Safari · github.com</span>
+          </div>
+          <p class="finding-summary">
+            GitHub Pages provides no real-time deployment status updates, no propagation delay warnings, and no indication that rapid consecutive commits will cancel in-progress deployments. When a user uploads a replacement file and the live site does not update immediately, there is no guidance on whether to wait, refresh, or take action. This causes users to troubleshoot a problem that doesn't exist — triggering more commits that cancel previous deployments and extend the delay further. Even after all checks pass, propagation to the live site is inconsistent across devices and can take 6+ minutes on mobile with no user-facing explanation.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Navigate to a GitHub Pages repository and open a file in an images folder</span></li>
+              <li><span class="step-num">2.</span><span>Delete existing file and commit</span></li>
+              <li><span class="step-num">3.</span><span>Without waiting for deployment to complete, upload a replacement file with the same name and commit</span></li>
+              <li><span class="step-num">4.</span><span>Observe: deployment checks are cancelled (✗ 0/3) with no warning that the previous deployment was interrupted</span></li>
+              <li><span class="step-num">5.</span><span>Attempt to monitor deployment progress — page does not update in real time, requires manual refresh</span></li>
+              <li><span class="step-num">6.</span><span>Wait for all checks to pass (✓ 3/3) — confirm on desktop browser that site has updated</span></li>
+              <li><span class="step-num">7.</span><span>Check same page on mobile — observe site has not updated despite successful deployment</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>GitHub provides real-time deployment status updates, warns users before a new commit cancels an in-progress deployment, and communicates that propagation may take additional time after checks pass — especially across different devices and networks.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>Deployment status is static until manually refreshed. No warning is shown when a new commit cancels a previous deployment. After all checks pass, the live site updated on desktop but had not updated on mobile after 6+ minutes. No estimated propagation time or device-specific guidance is provided anywhere in the interface.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Notes</p>
+            <div class="notes-box">
+              Reliable workaround — delete old file, wait for full deployment, then upload replacement — is not documented or suggested by GitHub anywhere. Discovered through extended trial and error. Commit history shows the troubleshooting loop this causes in practice.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GH-003 -->
+    <div class="finding" id="gh-003">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GH-003</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Delete button inaccessible on Brave — cross-browser issue undisclosed</span>
+          <span class="finding-area">File management · Cross-browser compatibility</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="sev-badge sev-high">Priority: High</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">macOS · Brave · github.com</span>
+          </div>
+          <p class="finding-summary">
+            The delete button for repository files is not accessible when using the Brave browser. The button either does not appear or cannot be interacted with. GitHub provides no disclosure of browser compatibility limitations, no workaround instructions, and no fallback. Users on Brave cannot delete files through the standard UI. Safari renders the button correctly, suggesting the issue is specific to Brave's script-blocking or rendering behavior rather than a macOS-level problem.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Open github.com in Brave browser on macOS</span></li>
+              <li><span class="step-num">2.</span><span>Navigate to a repository and open any file</span></li>
+              <li><span class="step-num">3.</span><span>Attempt to locate and interact with the delete (trash) icon</span></li>
+              <li><span class="step-num">4.</span><span>Observe: button is missing or non-functional</span></li>
+              <li><span class="step-num">5.</span><span>Repeat in Safari — button functions normally</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>Delete functionality works consistently across all major browsers, or GitHub discloses known browser limitations and provides a workaround.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>Delete button is inaccessible on Brave. No browser compatibility notice or workaround is provided anywhere in the interface or documentation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GH-004 -->
+    <div class="finding" id="gh-004">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GH-004</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">TTL field undocumented in custom domain DNS setup</span>
+          <span class="finding-area">GitHub Pages · Custom domain setup</span>
+        </div>
+        <span class="sev-badge sev-medium">Medium</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-medium">Severity: Medium</span>
+            <span class="sev-badge sev-medium">Priority: Medium</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">macOS · Brave · github.com · Pages settings</span>
+          </div>
+          <p class="finding-summary">
+            The custom domain setup flow for GitHub Pages provides DNS configuration instructions that assume significant prior technical knowledge. While GitHub offers both setup and troubleshooting documentation covering record types, IP addresses, and common errors, neither the in-product flow nor the supporting documentation mentions TTL (Time to Live) — a required field during DNS configuration at most providers. The field presents numeric options such as 600 and 3600 with no explanation of what TTL controls, how it affects domain propagation, or which value is appropriate for a standard GitHub Pages setup. Non-technical users must seek external resources to complete this specific step independently.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Navigate to a GitHub Pages repository → Settings → Pages</span></li>
+              <li><span class="step-num">2.</span><span>Enter a custom domain and follow the DNS configuration prompts</span></li>
+              <li><span class="step-num">3.</span><span>Navigate to your DNS provider to create the required DNS records</span></li>
+              <li><span class="step-num">4.</span><span>Locate the TTL field in the DNS record creation form</span></li>
+              <li><span class="step-num">5.</span><span>Observe that no explanation of TTL, its function, or a recommended value is provided in the GitHub setup flow or linked documentation</span></li>
+              <li><span class="step-num">6.</span><span>Attempt to complete setup without any prior DNS knowledge</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>GitHub's setup documentation or in-product guidance explains the TTL field, its effect on domain propagation, and provides a recommended value for a standard GitHub Pages configuration.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>TTL is not mentioned anywhere in GitHub's custom domain setup flow or supporting documentation. Users encountering the field must determine an appropriate value through external research.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="../resume.html">Resume</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    function toggleFinding(btn) {
+      const finding = btn.closest('.finding');
+      const isOpen = finding.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.finding.open').forEach(f => f.classList.remove('open'));
+      // Open this one if it wasn't already open
+      if (!isOpen) finding.classList.add('open');
+    }
+  </script>
+
+</body>
+</html>

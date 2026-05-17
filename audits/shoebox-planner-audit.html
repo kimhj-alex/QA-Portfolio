@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shoebox Planner Self-Audit — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      min-height: 280px;
+    }
+
+    .page-header-left {
+      padding: 64px 48px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb a {
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--rust); }
+    .breadcrumb span { color: var(--rust); margin: 0 8px; }
+
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 4vw, 60px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--grey);
+      margin-top: 8px;
+    }
+
+    .page-header-meta {
+      margin-top: 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-header-right {
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ── META TABLE ── */
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .meta-table tr { border-bottom: 1px solid var(--border); }
+    .meta-table tr:first-child { border-top: 1px solid var(--border); }
+
+    .meta-table td {
+      padding: 12px 0;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    .meta-table td:first-child {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      width: 140px;
+      padding-right: 16px;
+    }
+
+    .meta-table td:last-child {
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    /* ── BADGES ── */
+    .sev-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .sev-high   { border-color: var(--rust); color: var(--rust); }
+    .sev-medium { border-color: #d4a800; color: #a07d00; }
+    .sev-low    { border-color: #5a9e6f; color: #3a7a52; }
+
+    .status-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+    }
+
+    .tag.accent { color: var(--rust); border-color: var(--rust); }
+
+    /* ── CONTEXT STRIP ── */
+    .context-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .context-left {
+      padding: 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .context-right {
+      padding: 48px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 16px;
+    }
+
+    .context-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+    }
+
+    /* ── SUMMARY TABLE ── */
+    .summary-section {
+      border-bottom: 1px solid var(--border);
+      padding: 48px;
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .summary-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .summary-table td {
+      padding: 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .summary-table tr:hover td { background: #f5f3ef; }
+
+    .summary-table td:first-child {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      white-space: nowrap;
+      width: 80px;
+    }
+
+    .platform-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+      margin-left: 4px;
+    }
+
+    /* ── FINDINGS ── */
+    .findings-section { padding: 0; }
+
+    .findings-header {
+      padding: 48px 48px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding { border-bottom: 1px solid var(--border); }
+
+    .finding-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 32px 48px;
+      display: grid;
+      grid-template-columns: 80px 1fr auto auto;
+      align-items: center;
+      gap: 24px;
+      text-align: left;
+      transition: background 0.15s;
+    }
+
+    .finding-trigger:hover { background: #f5f3ef; }
+
+    .finding-id {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--rust);
+      letter-spacing: 0.08em;
+    }
+
+    .finding-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .finding-title {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--black);
+      text-align: left;
+    }
+
+    .finding-area {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    .finding-chevron {
+      font-size: 18px;
+      color: var(--grey);
+      transition: transform 0.3s ease, color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .finding.open .finding-chevron {
+      transform: rotate(180deg);
+      color: var(--rust);
+    }
+
+    .finding-body {
+      display: none;
+      padding: 0 48px 48px;
+      border-top: 1px solid var(--border);
+      background: #f9f8f6;
+    }
+
+    .finding.open .finding-body { display: block; }
+
+    .finding-body-inner {
+      max-width: 800px;
+      padding-top: 40px;
+    }
+
+    .finding-summary {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding-block { margin-bottom: 36px; }
+
+    .finding-block-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 12px;
+    }
+
+    .finding-block p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+    }
+
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .steps-list li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--black);
+    }
+
+    .step-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      margin-top: 3px;
+    }
+
+    .finding-meta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── IMPROVEMENT NOTE ── */
+    .improvement-section {
+      padding: 48px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    .improvement-box {
+      background: #f9f8f6;
+      border: 1px solid var(--border);
+      border-left: 3px solid #d4a800;
+      padding: 24px;
+    }
+
+    .improvement-box-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #a07d00;
+      margin-bottom: 10px;
+    }
+
+    .improvement-box p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+
+    .footer-right { display: flex; gap: 28px; }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header-left { animation: fadeUp 0.5s ease both; }
+    .page-header-right { animation: fadeUp 0.5s ease both 0.15s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header, .context-strip, .improvement-section { grid-template-columns: 1fr; }
+      .page-header-left, .context-left { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 24px; }
+      .page-header-right, .context-right { padding: 40px 24px; }
+      .summary-section { padding: 32px 24px; }
+      .finding-trigger { grid-template-columns: 60px 1fr auto; padding: 24px; gap: 16px; }
+      .finding-trigger .sev-badge { display: none; }
+      .finding-body { padding: 0 24px 32px; }
+      .findings-header { padding: 32px 24px 24px; }
+      .improvement-section { padding: 32px 24px; }
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../audits.html" class="active">Audits</a></li>
+      <li><a href="../bug-reports.html">Bug Reports</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <div>
+        <p class="breadcrumb">
+          <a href="../audits.html">Audits</a>
+          <span>→</span>
+          Audit 03
+        </p>
+        <h1 class="page-title">Shoebox<br>Planner</h1>
+        <p class="page-subtitle">Self-Audit · v1.0-beta</p>
+      </div>
+      <div class="page-header-meta">
+        <span class="tag accent">7 Findings</span>
+        <span class="tag">Self-Developed</span>
+        <span class="tag">Desktop · iPad</span>
+        <span class="tag">PWA</span>
+      </div>
+    </div>
+
+    <div class="page-header-right">
+      <table class="meta-table">
+        <tr>
+          <td>Tester</td>
+          <td>Hyeji Kim (Alex) — developer and tester</td>
+        </tr>
+        <tr>
+          <td>Date</td>
+          <td>May 2026</td>
+        </tr>
+        <tr>
+          <td>Platform</td>
+          <td>Shoebox Planner v1.0-beta (PWA)</td>
+        </tr>
+        <tr>
+          <td>Environment</td>
+          <td>macOS · Brave · Desktop · iPad · Touch</td>
+        </tr>
+        <tr>
+          <td>Method</td>
+          <td>Checklist testing · Exploratory testing · Cross-device regression</td>
+        </tr>
+        <tr>
+          <td>Scope</td>
+          <td>Core furniture interactions, undo/redo, save/load, layer management, color controls, touch support</td>
+        </tr>
+        <tr>
+          <td>Total Findings</td>
+          <td>7 bugs · 1 improvement note</td>
+        </tr>
+      </table>
+    </div>
+  </header>
+
+  <!-- CONTEXT STRIP -->
+  <div class="context-strip">
+    <div class="context-left">
+      <p class="section-label">About the App</p>
+      <p class="context-body">
+        Shoebox Planner is a drag-and-drop 2D room planning tool built from scratch as a PWA — designed for desktop and tablet use. Users can create rooms, place and customize furniture items, adjust sizes and colors, manage layers, and save or export their layouts. This audit was conducted by the developer as an objective self-assessment of the current beta release across desktop and iPad environments.
+      </p>
+    </div>
+    <div class="context-right">
+      <p class="section-label">Testing Approach</p>
+      <p class="context-body">
+        Testing followed a structured checklist covering all core features, executed first on desktop then repeated on iPad to identify platform-specific regressions. Features that passed on both platforms were marked complete. Bugs were documented where behavior deviated from expected. Where a desktop bug could not be reproduced on iPad due to other blocking bugs, it was noted as untestable rather than passed.
+      </p>
+    </div>
+  </div>
+
+  <!-- SUMMARY OF FINDINGS -->
+  <section class="summary-section">
+    <p class="section-label">Summary of Findings</p>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Platform</th>
+          <th>Severity</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RP-001</td>
+          <td>Undo deletes placeholder furniture but not furniture in saved rooms</td>
+          <td><span class="platform-badge">Desktop</span><span class="platform-badge">iPad</span></td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>RP-002</td>
+          <td>Clicking a layer does not highlight corresponding furniture in room</td>
+          <td><span class="platform-badge">Desktop</span></td>
+          <td><span class="sev-badge sev-low">Low</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>RP-003</td>
+          <td>Multi-step undo bleeds into wrong furniture — position and color changes affect unrelated items</td>
+          <td><span class="platform-badge">Desktop</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>RP-004</td>
+          <td>Saved room does not restore layer order</td>
+          <td><span class="platform-badge">Desktop</span></td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>RP-005</td>
+          <td>Layer panel scroll only works on edge — touch elsewhere reorders furniture instead</td>
+          <td><span class="platform-badge">iPad</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>RP-006</td>
+          <td>Hide, delete, and unhide options unreachable on touch — context menu opens but options cannot be selected</td>
+          <td><span class="platform-badge">iPad</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>RP-007</td>
+          <td>Furniture color change does not work on iPad</td>
+          <td><span class="platform-badge">iPad</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- FINDINGS -->
+  <section class="findings-section">
+    <div class="findings-header">
+      <p class="section-label">Individual Findings</p>
+    </div>
+
+    <!-- RP-001 -->
+    <div class="finding" id="rp-001">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">RP-001</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Undo deletes placeholder furniture but not furniture in saved rooms</span>
+          <span class="finding-area">Undo/Redo · Furniture Management · Desktop + iPad</span>
+        </div>
+        <span class="sev-badge sev-medium">Medium</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-medium">Severity: Medium</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">Desktop · iPad</span>
+          </div>
+          <p class="finding-summary">
+            The undo function behaves inconsistently depending on whether the user is working with a new room or a saved room. In a new room, undoing after adding placeholder furniture correctly removes the item. In a saved room, the same undo action does not remove placeholder furniture — the item remains even after multiple undo presses. This inconsistency means undo is unreliable as a correction tool in saved rooms, which is where users are most likely to be making deliberate edits.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Create a new room and add placeholder furniture — press Undo — observe furniture is removed correctly</span></li>
+              <li><span class="step-num">2.</span><span>Save the room and reopen it from the Saved Rooms list</span></li>
+              <li><span class="step-num">3.</span><span>Add placeholder furniture to the saved room</span></li>
+              <li><span class="step-num">4.</span><span>Press Undo</span></li>
+              <li><span class="step-num">5.</span><span>Observe: placeholder furniture is not removed — undo has no effect on newly added items in a saved room</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>Undo removes the most recently added furniture item consistently, regardless of whether the room is new or loaded from a saved state.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>Undo works correctly in new rooms but has no effect on placeholder furniture added to saved rooms. The undo history appears to reset or not initialize correctly when a saved room is loaded.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RP-002 -->
+    <div class="finding" id="rp-002">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">RP-002</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Clicking a layer does not highlight corresponding furniture in room</span>
+          <span class="finding-area">Layer Management · Desktop only</span>
+        </div>
+        <span class="sev-badge sev-low">Low</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-low">Severity: Low</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">Desktop only</span>
+          </div>
+          <p class="finding-summary">
+            On desktop, clicking a furniture item in the room correctly highlights the corresponding layer in the left panel. The reverse is not true — clicking a layer in the panel does not highlight or select the corresponding furniture item in the room canvas. This breaks the expected bidirectional relationship between the layer list and the canvas, making it harder to identify which furniture item corresponds to a given layer when the room is complex. Note: this works correctly on iPad, making it a desktop-specific regression.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Open the app on desktop and create a room with multiple furniture items</span></li>
+              <li><span class="step-num">2.</span><span>Click a furniture item in the room canvas — observe its layer highlights in the left panel</span></li>
+              <li><span class="step-num">3.</span><span>Click a different layer in the left panel</span></li>
+              <li><span class="step-num">4.</span><span>Observe: the corresponding furniture item in the room canvas does not highlight or become selected</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>Clicking a layer in the panel highlights and selects the corresponding furniture item in the room canvas — mirroring the behavior that already works in the opposite direction.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>Clicking a layer in the panel has no effect on the canvas selection. The interaction is one-directional only on desktop. Works correctly on iPad.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RP-003 -->
+    <div class="finding" id="rp-003">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">RP-003</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Multi-step undo bleeds into wrong furniture — position and color changes affect unrelated items</span>
+          <span class="finding-area">Undo/Redo · Desktop only</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">Desktop only</span>
+            <span class="tag">Not testable on iPad — color controls blocked by RP-007</span>
+          </div>
+          <p class="finding-summary">
+            When a user moves one furniture item and then changes the color of a different furniture item, pressing undo multiple times causes incorrect behavior — the undo stack applies changes to the wrong furniture item. On the second undo press, either the first item moves unexpectedly or the second item's color changes instead of reverting the intended action. The undo history appears to mix state between different furniture items rather than tracking each item's history independently.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Create a room with at least two furniture items</span></li>
+              <li><span class="step-num">2.</span><span>Move Item A to a new position</span></li>
+              <li><span class="step-num">3.</span><span>Change the color of Item B</span></li>
+              <li><span class="step-num">4.</span><span>Press Undo once — observe Item B's color reverts (correct)</span></li>
+              <li><span class="step-num">5.</span><span>Press Undo again</span></li>
+              <li><span class="step-num">6.</span><span>Observe: Item A moves unexpectedly, or Item B's color changes again instead of Item A reverting to its original position</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>Each undo press reverts the most recent action in the correct sequence — second undo moves Item A back to its original position, regardless of which item was acted on most recently.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>The undo stack does not correctly isolate actions by item — multi-step undo bleeds between furniture items, applying position or color changes to the wrong item. Not testable on iPad as color controls are non-functional (see RP-007).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RP-004 -->
+    <div class="finding" id="rp-004">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">RP-004</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Saved room does not restore layer order</span>
+          <span class="finding-area">Save/Load · Desktop only · Not testable on iPad</span>
+        </div>
+        <span class="sev-badge sev-medium">Medium</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-medium">Severity: Medium</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">Desktop only</span>
+            <span class="tag">Not testable on iPad — layer reorder blocked by RP-005</span>
+          </div>
+          <p class="finding-summary">
+            When a room is saved and reopened, the layer order of furniture items is not preserved. Items appear in a default order rather than the custom order the user had arranged. Hidden layer state is saved and restored correctly — only the order is lost. This means any deliberate layering decisions made by the user are discarded on save, requiring them to manually re-arrange layers every time a saved room is opened. Not testable on iPad as layer reordering itself is broken on touch (see RP-005).
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Create a room with multiple furniture items and arrange layers in a custom order</span></li>
+              <li><span class="step-num">2.</span><span>Save the room</span></li>
+              <li><span class="step-num">3.</span><span>Return to the home screen and reopen the saved room</span></li>
+              <li><span class="step-num">4.</span><span>Observe: furniture items are present but layer order has reverted to default</span></li>
+              <li><span class="step-num">5.</span><span>Note: any hidden layers are correctly restored as hidden</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>Reopening a saved room restores all furniture items in the exact layer order they were in when saved.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>Layer order is not saved. Furniture items reappear in default order. Hidden layer state is preserved correctly, confirming the save mechanism is partially working but not capturing layer position data.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RP-005 -->
+    <div class="finding" id="rp-005">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">RP-005</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Layer panel scroll only works on edge — touch elsewhere reorders furniture instead</span>
+          <span class="finding-area">Layer Management · Touch · iPad only</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">iPad only</span>
+          </div>
+          <p class="finding-summary">
+            On iPad, the layer panel on the left side of the screen does not scroll reliably. Attempting to scroll the panel by dragging anywhere except the very edge of the panel instead triggers the drag-to-reorder behavior, moving the furniture layer rather than scrolling the list. This makes the layer panel effectively unusable for scrolling on touch when a room has more layers than fit on screen — users cannot navigate the full layer list without accidentally reordering items.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Open the app on iPad and create a room with enough furniture items to require layer panel scrolling</span></li>
+              <li><span class="step-num">2.</span><span>Attempt to scroll the layer panel by dragging in the center of the panel</span></li>
+              <li><span class="step-num">3.</span><span>Observe: the drag gesture reorders the furniture layer instead of scrolling the list</span></li>
+              <li><span class="step-num">4.</span><span>Attempt to scroll by dragging on the very edge of the panel</span></li>
+              <li><span class="step-num">5.</span><span>Observe: scrolling works only from the edge</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>The layer panel scrolls reliably when dragged anywhere within it. Drag-to-reorder is triggered only by a clearly distinct gesture (e.g. long press and drag on the drag handle).</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>Scroll and reorder gestures conflict — dragging anywhere except the edge triggers reorder. The layer panel is not reliably navigable on touch.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RP-006 -->
+    <div class="finding" id="rp-006">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">RP-006</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Hide, delete, and unhide options unreachable on touch — context menu opens but options cannot be selected</span>
+          <span class="finding-area">Furniture Controls · Touch · iPad only</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">iPad only</span>
+          </div>
+          <p class="finding-summary">
+            On iPad, the context menu for furniture items (containing Hide, Delete, and Unhide options) opens correctly with a two-finger tap or long press, but the menu options cannot be selected with touch. Tapping any option in the menu does not trigger the action. This makes it impossible to hide, delete, or unhide furniture items using touch on iPad, blocking three core furniture management functions entirely on the touch interface.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Open the app on iPad and create a room with furniture items</span></li>
+              <li><span class="step-num">2.</span><span>Attempt to open the context menu on a furniture item using two touches or a long press</span></li>
+              <li><span class="step-num">3.</span><span>Observe: the context menu opens showing Hide, Delete, and Unhide options</span></li>
+              <li><span class="step-num">4.</span><span>Tap any option in the context menu</span></li>
+              <li><span class="step-num">5.</span><span>Observe: no action is triggered — the option appears tappable but does not respond</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>Tapping any option in the context menu triggers the corresponding action — hide removes the item from view, delete removes it from the room, unhide restores a hidden item.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>The context menu opens but its options are non-interactive on touch. Hide, delete, and unhide are completely inaccessible on iPad.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RP-007 -->
+    <div class="finding" id="rp-007">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">RP-007</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Furniture color change does not work on iPad</span>
+          <span class="finding-area">Color Controls · Touch · iPad only</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="status-badge">Open</span>
+            <span class="tag">iPad only</span>
+          </div>
+          <p class="finding-summary">
+            On iPad, tapping a color swatch in the furniture layer panel does not change the furniture item's color. The color controls are visible and appear interactive, but tapping any swatch produces no color change on the canvas. Color customization is a core feature of the app — its complete non-functionality on iPad significantly limits the usefulness of the touch interface and blocks related testing (such as verifying undo behavior for color changes on iPad).
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Open the app on iPad and create a room with at least one furniture item</span></li>
+              <li><span class="step-num">2.</span><span>Select a furniture item — observe its layer panel with color swatches is visible</span></li>
+              <li><span class="step-num">3.</span><span>Tap any color swatch in the panel</span></li>
+              <li><span class="step-num">4.</span><span>Observe: the furniture item's color does not change</span></li>
+              <li><span class="step-num">5.</span><span>Repeat with multiple swatches and multiple furniture items — observe color change never triggers on touch</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>Tapping a color swatch changes the selected furniture item's color to the tapped color, matching the behavior on desktop.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>Color swatches do not respond to touch. No color change occurs on iPad regardless of which swatch is tapped or which furniture item is selected.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- IMPROVEMENT NOTE -->
+  <div class="improvement-section">
+    <div>
+      <p class="section-label">Improvement Note</p>
+      <p style="font-size:14px; font-weight:300; line-height:1.8; color:var(--grey);">The following is a known design limitation identified during testing — not a bug, but a candidate for a future improvement.</p>
+    </div>
+    <div class="improvement-box">
+      <p class="improvement-box-label">Unit Toggle — Label Only, No Value Conversion</p>
+      <p>The unit toggle switches between cm and px labels but does not convert existing dimension values when toggled. A room set to 600 cm displays as 600 px after toggling — the number stays the same, only the label changes. This was an intentional design decision for simplicity, but user feedback suggests the lack of conversion is confusing. A future improvement could automatically convert values when the unit is toggled, so 600 cm becomes the equivalent pixel value and vice versa.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="../resume.html">Resume</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    function toggleFinding(btn) {
+      const finding = btn.closest('.finding');
+      const isOpen = finding.classList.contains('open');
+      document.querySelectorAll('.finding.open').forEach(f => f.classList.remove('open'));
+      if (!isOpen) finding.classList.add('open');
+    }
+  </script>
+
+</body>
+</html>

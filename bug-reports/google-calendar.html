@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BR-008 Google Calendar — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    .page-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      min-height: 280px;
+    }
+
+    .page-header-left {
+      padding: 64px 48px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb a {
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--rust); }
+    .breadcrumb span { color: var(--rust); margin: 0 8px; }
+
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 4vw, 60px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-family: var(--serif);
+      font-size: clamp(16px, 1.8vw, 22px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--grey);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .page-header-meta {
+      margin-top: 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-header-right {
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .meta-table tr { border-bottom: 1px solid var(--border); }
+    .meta-table tr:first-child { border-top: 1px solid var(--border); }
+
+    .meta-table td {
+      padding: 12px 0;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    .meta-table td:first-child {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      width: 140px;
+      padding-right: 16px;
+    }
+
+    .meta-table td:last-child {
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    .sev-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .sev-high   { border-color: var(--rust); color: var(--rust); }
+    .sev-medium { border-color: #d4a800; color: #a07d00; }
+    .sev-low    { border-color: #5a9e6f; color: #3a7a52; }
+
+    .status-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+    }
+
+    .tag.accent { color: var(--rust); border-color: var(--rust); }
+
+    .report-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-main {
+      padding: 64px 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .report-sidebar { padding: 64px 48px; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 16px;
+    }
+
+    .report-summary {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--black);
+      margin-bottom: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-block { margin-bottom: 40px; }
+
+    .report-block-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 14px;
+    }
+
+    .report-block p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+    }
+
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .steps-list li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--black);
+    }
+
+    .step-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      margin-top: 3px;
+    }
+
+    .sidebar-meta-block {
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-meta-block:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .highlight-box {
+      background: #f9f8f6;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--rust);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+
+    .highlight-box:last-child { margin-bottom: 0; }
+
+    .highlight-box-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 8px;
+    }
+
+    .highlight-box p {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--black);
+    }
+
+    .highlight-box strong { font-weight: 500; }
+
+    /* screenshot */
+    .screenshot-wrap {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .screenshot-wrap img {
+      width: 100%;
+      display: block;
+    }
+
+    .screenshot-caption {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.06em;
+      padding: 10px 12px;
+      border-top: 1px solid var(--border);
+      background: #f9f8f6;
+    }
+
+    .report-nav {
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-nav a {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .report-nav a:hover { color: var(--rust); }
+
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+    .footer-right { display: flex; gap: 28px; }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header-left { animation: fadeUp 0.5s ease both; }
+    .page-header-right { animation: fadeUp 0.5s ease both 0.15s; }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header, .report-body { grid-template-columns: 1fr; }
+      .page-header-left, .report-main { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 24px; }
+      .page-header-right, .report-sidebar { padding: 40px 24px; }
+      .report-nav { padding: 24px; }
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../audits.html">Audits</a></li>
+      <li><a href="../bug-reports.html" class="active">Bug Reports</a></li>
+      <li><a href="../gen-ai-cases.html">Gen AI Cases</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <div>
+        <p class="breadcrumb">
+          <a href="../bug-reports.html">Bug Reports</a>
+          <span>→</span>
+          BR-008
+        </p>
+        <h1 class="page-title">Google<br>Calendar</h1>
+        <p class="page-subtitle">No Date Jump Navigation on Desktop; Mobile Search Limited to Two-Year Window</p>
+      </div>
+      <div class="page-header-meta">
+        <span class="tag accent">Low Severity</span>
+        <span class="tag">Web · Mobile</span>
+        <span class="tag">Navigation</span>
+        <span class="tag">Feature Parity</span>
+      </div>
+    </div>
+
+    <div class="page-header-right">
+      <table class="meta-table">
+        <tr>
+          <td>ID</td>
+          <td>BR-008</td>
+        </tr>
+        <tr>
+          <td>Severity</td>
+          <td><span class="sev-badge sev-low">Low</span></td>
+        </tr>
+        <tr>
+          <td>Priority</td>
+          <td><span class="sev-badge sev-low">Low</span></td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td><span class="status-badge">Open</span></td>
+        </tr>
+        <tr>
+          <td>Platform</td>
+          <td>Google Calendar</td>
+        </tr>
+        <tr>
+          <td>Environment</td>
+          <td>macOS · Brave · calendar.google.com · iPhone · iOS · Google Calendar app</td>
+        </tr>
+        <tr>
+          <td>Feature Area</td>
+          <td>Date Navigation · Search · Mobile</td>
+        </tr>
+        <tr>
+          <td>Tester</td>
+          <td>Hyeji Kim (Alex)</td>
+        </tr>
+        <tr>
+          <td>Date</td>
+          <td>2026</td>
+        </tr>
+      </table>
+    </div>
+  </header>
+
+  <!-- REPORT BODY -->
+  <div class="report-body">
+
+    <div class="report-main">
+
+      <div class="report-block">
+        <p class="section-label">Summary</p>
+        <p class="report-summary">
+          Google Calendar lacks a direct date jump feature on both desktop and mobile. On desktop, navigating to a specific past or future date requires switching to Year view and clicking through months manually — a multi-step workaround with no date input field or dropdown anywhere in the interface. On mobile, Year view is not available at all, making manual date navigation even more tedious. The mobile search function compounds this issue by enforcing a hard two-year search window: results display only entries after a date approximately two years prior to the current date, with a notice at the top reading "Only entries after [date] are shown here." Past events outside this window — such as medical appointments from 2022 — are completely inaccessible from the mobile app and can only be retrieved by switching to desktop. No option to extend the search range is provided on mobile.
+        </p>
+      </div>
+
+      <div class="report-block">
+        <p class="report-block-label">Steps to Reproduce — Desktop Navigation</p>
+        <ol class="steps-list">
+          <li><span class="step-num">1.</span><span>Open calendar.google.com and attempt to navigate to a specific date in the distant past or future</span></li>
+          <li><span class="step-num">2.</span><span>Observe: no date input field, jump-to-date dropdown, or search-by-date option exists</span></li>
+          <li><span class="step-num">3.</span><span>Switch to Year view — click the left arrow repeatedly to navigate to the target year</span></li>
+          <li><span class="step-num">4.</span><span>Scroll to the target month and click the target date</span></li>
+          <li><span class="step-num">5.</span><span>Observe: Day view for the selected date loads after a brief loading state</span></li>
+        </ol>
+      </div>
+
+      <div class="report-block">
+        <p class="report-block-label">Steps to Reproduce — Mobile Search Cutoff</p>
+        <ol class="steps-list">
+          <li><span class="step-num">1.</span><span>Open the Google Calendar app on iOS</span></li>
+          <li><span class="step-num">2.</span><span>Tap the search icon and search for a recurring event or appointment (e.g. "dentist")</span></li>
+          <li><span class="step-num">3.</span><span>Observe: results load with a notice at the top — "Only entries after [date ~2 years ago] are shown here"</span></li>
+          <li><span class="step-num">4.</span><span>Scroll through all results — confirm events older than the cutoff date are not shown</span></li>
+          <li><span class="step-num">5.</span><span>Attempt to find an option to extend the search range — observe no such option exists</span></li>
+          <li><span class="step-num">6.</span><span>Repeat the same search on desktop — observe all historical events appear with no date restriction</span></li>
+        </ol>
+      </div>
+
+      <div class="report-block">
+        <p class="report-block-label">Expected Result</p>
+        <p>Google Calendar provides a direct date jump input on desktop allowing users to navigate to any date without manual arrow navigation. Mobile search returns all matching events regardless of age, or provides an option to expand the search range beyond the default two-year window.</p>
+      </div>
+
+      <div class="report-block">
+        <p class="report-block-label">Actual Result</p>
+        <p>No date jump input exists on desktop or mobile. The only navigation method is manual arrow clicking, with Year view as the fastest available workaround on desktop only. Mobile search silently limits results to approximately the past two years with no option to extend the range, making historical events inaccessible from the mobile app entirely.</p>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="report-sidebar">
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Screenshot</p>
+        <div class="screenshot-wrap">
+          <img src="../assets/screenshots/br008-mobile-search-cutoff.png" alt="Google Calendar mobile search showing cutoff notice: Only entries after May 16, 2024 are shown here" />
+          <p class="screenshot-caption">Mobile search results showing the two-year cutoff notice</p>
+        </div>
+      </div>
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Two Separate Issues</p>
+        <div class="highlight-box">
+          <p class="highlight-box-label">1 — No Date Jump Navigation</p>
+          <p>Neither desktop nor mobile provides a direct way to navigate to a specific date. Desktop requires switching to Year view and clicking through manually. Mobile doesn't offer Year view at all.</p>
+        </div>
+        <div class="highlight-box">
+          <p class="highlight-box-label">2 — Mobile Search Hard Cutoff</p>
+          <p>Mobile search enforces a <strong>~2 year window</strong> with no way to extend it. Events outside this range — medical records, past appointments, historical entries — are completely inaccessible from mobile.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Severity Rationale</p>
+        <div class="highlight-box">
+          <p class="highlight-box-label">Why Low</p>
+          <p>Google Calendar is primarily a forward-looking scheduling tool and most users rarely need to navigate far into the past. However, the mobile search cutoff crosses from inconvenience into a genuine <strong>data accessibility issue</strong> for users who rely on their calendar as a historical record of appointments.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Suggested Fix</p>
+        <div class="highlight-box">
+          <p>Add a "Jump to date" input field accessible from the mini calendar on desktop. On mobile, add an option in search to expand results beyond the default window, or remove the hard cutoff entirely and load results progressively.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REPORT NAV -->
+  <div class="report-nav">
+    <a href="youtube-music.html">← BR-007 YouTube Studio</a>
+    <a href="../bug-reports.html">← All Bug Reports</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="../resume.html">Resume</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>

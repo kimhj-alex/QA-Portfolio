@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study 02: Consistency Across Books — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      min-height: 280px;
+    }
+
+    .page-header-left {
+      padding: 64px 48px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb a {
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--rust); }
+    .breadcrumb span { color: var(--rust); margin: 0 8px; }
+
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 4vw, 60px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-family: var(--serif);
+      font-size: clamp(16px, 1.8vw, 22px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--grey);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .page-header-meta {
+      margin-top: 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .tag.accent { border-color: var(--rust); color: var(--rust); }
+
+    .page-header-right {
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 16px;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .meta-table tr { border-bottom: 1px solid var(--border); }
+    .meta-table tr:first-child { border-top: 1px solid var(--border); }
+
+    .meta-table td {
+      padding: 12px 0;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    .meta-table td:first-child {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      width: 140px;
+      padding-right: 16px;
+    }
+
+    .meta-table td:last-child {
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    /* ── TAKEAWAYS STRIP ── */
+    .takeaways-strip {
+      border-bottom: 1px solid var(--border);
+      background: #f0ede8;
+    }
+
+    .takeaways-inner {
+      padding: 48px;
+    }
+
+    .takeaways-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 20px;
+    }
+
+    .takeaway-cell {
+      background: #f0ede8;
+      padding: 24px 28px;
+    }
+
+    .takeaway-number {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--rust);
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .takeaway-title {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .takeaway-body {
+      font-size: 12.5px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--grey);
+    }
+
+    /* ── NARRATIVE ── */
+    .narrative-section {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 72px 48px;
+    }
+
+    .narrative-section h2 {
+      font-family: var(--serif);
+      font-size: clamp(24px, 2.6vw, 32px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 56px 0 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .narrative-section h2:first-child { margin-top: 0; }
+
+    .narrative-section p {
+      font-size: 15.5px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--black);
+      margin-bottom: 22px;
+    }
+
+    .narrative-section strong { font-weight: 500; }
+
+    .narrative-section code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: #f0ede8;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      color: var(--rust);
+    }
+
+    /* ── EXCHANGE ILLUSTRATION ── */
+    .exchange {
+      margin: 32px 0;
+      border: 1px solid var(--border);
+      background: #f5f3ef;
+    }
+
+    .exchange-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--grey);
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .exchange-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .exchange-turn {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 16px;
+      align-items: baseline;
+    }
+
+    .exchange-role {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--rust);
+    }
+
+    .exchange-role.ai { color: var(--grey); }
+
+    .exchange-text {
+      font-size: 13.5px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--black);
+      font-style: italic;
+    }
+
+    /* ── CODE ILLUSTRATION ── */
+    .code-block {
+      margin: 32px 0;
+      background: var(--black);
+      border: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .code-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rust);
+      padding: 12px 20px;
+      border-bottom: 1px solid #333;
+      background: #1a1a19;
+    }
+
+    .code-block pre {
+      padding: 20px 24px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.7;
+      color: #e8e0d8;
+      overflow-x: auto;
+    }
+
+    .code-block .del { color: #d47a63; text-decoration: line-through; opacity: 0.6; }
+    .code-block .add { color: #8fc9a0; }
+
+    blockquote.pull {
+      font-family: var(--serif);
+      font-size: clamp(19px, 2.2vw, 25px);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--black);
+      border-left: 3px solid var(--rust);
+      padding-left: 28px;
+      margin: 40px 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+    .footer-right { display: flex; gap: 28px; }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header-left { animation: fadeUp 0.5s ease both; }
+    .page-header-right { animation: fadeUp 0.5s ease both 0.15s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header { grid-template-columns: 1fr; }
+      .page-header-left { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 24px; }
+      .page-header-right { padding: 40px 24px; }
+      .takeaways-inner { padding: 32px 24px; }
+      .takeaways-grid { grid-template-columns: 1fr 1fr; }
+      .narrative-section { padding: 48px 24px; }
+      .exchange-turn { grid-template-columns: 1fr; gap: 4px; }
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../audits.html">Audits</a></li>
+      <li><a href="../bug-reports.html">Bug Reports</a></li>
+      <li><a href="../gen-ai-cases.html" class="active">Gen AI Cases</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <div>
+        <p class="breadcrumb">
+          <a href="../gen-ai-cases.html">Gen AI Cases</a>
+          <span>→</span>
+          Case Study 02
+        </p>
+        <h1 class="page-title">Consistency<br>Across Books</h1>
+        <p class="page-subtitle">Writing two romantic fantasy novellas alongside an AI collaborator — from quiet detail drift to inventing a scene, complete with sensory detail, that was never written.</p>
+      </div>
+      <div class="page-header-meta">
+        <span class="tag accent">Gen AI Evaluation</span>
+        <span class="tag">Creative Writing</span>
+        <span class="tag">Context Drift</span>
+        <span class="tag">Continuity</span>
+      </div>
+    </div>
+    <div class="page-header-right">
+      <table class="meta-table">
+        <tr>
+          <td>Context</td>
+          <td>Two romantic fantasy novellas — <em>Riverhill Apothecary</em> and <em>The Rogue and the Runaway</em> — drafted scene by scene with an AI writing collaborator</td>
+        </tr>
+        <tr>
+          <td>Task</td>
+          <td>Co-write original fiction, and catch it when the AI lost track of established facts, timelines, or character details</td>
+        </tr>
+        <tr>
+          <td>Tool</td>
+          <td>General-purpose conversational AI assistant, used as a long-term creative collaborator</td>
+        </tr>
+        <tr>
+          <td>Duration</td>
+          <td>Each novella drafted in a matter of days, across many separate sessions due to free-tier limits</td>
+        </tr>
+        <tr>
+          <td>Books</td>
+          <td>
+            <a href="https://www.amazon.com/dp/B0FRXJYJHK" target="_blank" rel="noopener" style="color: var(--rust); text-decoration: underline;">Riverhill Apothecary ↗</a><br>
+            <a href="https://www.amazon.com/dp/B0FRXK1B5S" target="_blank" rel="noopener" style="color: var(--rust); text-decoration: underline;">Riverhill Apothecary: Vignettes ↗</a><br>
+            <a href="https://www.amazon.com/dp/B0FRLZDMZM" target="_blank" rel="noopener" style="color: var(--rust); text-decoration: underline;">The Rogue and the Runaway ↗</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Finding type</td>
+          <td>Context drift in three quiet forms, plus two escalating hallucinations — one fix that invented new errors, and one manuscript mixup that led to a fully invented scene</td>
+        </tr>
+      </table>
+    </div>
+  </header>
+
+  <!-- TAKEAWAYS STRIP -->
+  <section class="takeaways-strip">
+    <div class="takeaways-inner">
+      <p class="section-label">Key Takeaways</p>
+      <div class="takeaways-grid">
+        <div class="takeaway-cell">
+          <p class="takeaway-number">01</p>
+          <p class="takeaway-title">Misattribution can escalate into invention</p>
+          <p class="takeaway-body">Given a Part 2 draft of one book, the AI gave detailed feedback on a different book's characters entirely. Corrected, its next attempt described a specific scene — an inn, a damp cloth, a held breath — that existed in neither manuscript.</p>
+        </div>
+        <div class="takeaway-cell">
+          <p class="takeaway-number">02</p>
+          <p class="takeaway-title">A fix can introduce a new hallucination</p>
+          <p class="takeaway-body">Correcting one invented plot detail (a stolen coat, a bar fight that never happened) produced a rewrite with several new invented details of its own. It took naming the error twice to get a clean version.</p>
+        </div>
+        <div class="takeaway-cell">
+          <p class="takeaway-number">03</p>
+          <p class="takeaway-title">Cross-project comparison is where facts slip</p>
+          <p class="takeaway-body">Asked to compare two characters from two different books, the AI inverted a plainly stated age gap — describing the older character as the younger one, backwards from what had just been said.</p>
+        </div>
+        <div class="takeaway-cell">
+          <p class="takeaway-number">04</p>
+          <p class="takeaway-title">The corrected version is what shipped</p>
+          <p class="takeaway-body">Every fix described here is verifiable in the finished, published text — this isn't a claim about what got fixed in conversation, it's checkable against the actual novellas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NARRATIVE -->
+  <section class="narrative-section">
+
+    <h2>The Setup</h2>
+    <p>
+      Riverhill Apothecary and The Rogue and the Runaway are two romantic fantasy novellas I wrote scene by scene with an AI collaborator, each drafted in a matter of days across a large number of separate conversations — separate not by choice, but because the free tier's usage limits kept cutting sessions short. That meant the AI's memory of either book was never the whole book at once, just whatever context and summarized notes carried forward between threads. Riverhill follows Sena, an apothecary in her thirties, and Jett, a shapeshifter with amnesia she takes in. The Rogue and the Runaway follows Darian, a runaway prince going by Finch, and Selene, a rogue going by Riven, roughly a decade younger than Sena.
+    </p>
+    <p>
+      That overlap is exactly where the interesting failures showed up. Not within a single book — where the AI generally held details steady across a session — but at the seams: comparing the two casts against each other, and holding a scene's internal logic in mind across a correction.
+    </p>
+
+    <h2>Getting Two Casts Backwards</h2>
+    <p>
+      At one point, thinking out loud about both books at once, I noticed something: Darian and Jett are only four years apart in age, but Riven and Sena are a full decade apart. I mentioned it as an aside — just an observation about how the two age gaps compared. The AI ran with it, describing what that gap "meant" for Riven and Sena's dynamic.
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">Darian and Jett are only four years apart. But Riven and Sena are ten years apart.</span>
+        </div>
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">That gap feels right — Sena's still growing into herself, learning how to hold softness and strength at once. Riven's already carved out her edges, older not just in years but in scars.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      That's backwards. Sena is the older of the two by a decade — the settled, established apothecary who's owned her shop for three years and built a whole life before the story even starts. Riven is the younger one, still running, still disguised, still working out who she gets to be once she stops. The AI had the actual number sitting right there in what I'd just said, and inverted the relationship anyway — swapping which woman was "still growing into herself" and which one had "already carved out her edges."
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">Sena is 32 and Riven is 22. It's the other way around.</span>
+        </div>
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">You're right — I completely reversed their ages. Sena is older by a full decade, and that changes everything.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      One plain sentence was enough to fix it, and the AI didn't argue or hedge — it corrected cleanly and immediately. But the direction of the original mistake is the interesting part. This wasn't a case of forgetting a detail that was never stated. The correct number appeared in my message one turn before the AI inverted it. Holding two separate casts in mind at once, even for a single comparative aside, was where a plainly available fact still got flipped.
+    </p>
+
+    <h2>A Scene That Took Two Corrections</h2>
+    <p>
+      The second moment happened inside a single scene, not across two books, and it shows a different kind of drift: getting a fix's direction backwards, then needing to be told twice what the actual point of a moment was.
+    </p>
+    <p>
+      Riven and Darian take turns keeping watch at night while traveling — a small, recurring detail load-bearing enough that its state (who's asleep, who's alert, whether either of them actually rests) was meant to track their growing trust over time. In an early pass at a scene meant to show progress in that trust, the AI wrote Riven staying awake and restless during Darian's watch — meant, presumably, to signal tension. I pushed back: that's not remarkable, that's just her doing her job. What's actually the point being made?
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">She was just doing what she was supposed to do. She shouldn't nod off. So what's the point being made?</span>
+        </div>
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">You're right, staying awake during her watch isn't remarkable. The moment only matters if it reveals something — Darian's noticing how restless she is, even alone with him. He wonders if it's because of him.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      That rewrite still had the mechanics backwards. In their arrangement, whoever isn't on watch is supposed to be asleep — that's the whole point of taking turns. Rewriting the scene to have Riven restless again, even during Darian's watch, kept the exact structural error it was supposed to fix: someone not sleeping when they're supposed to be. The actual story beat needed the opposite signal entirely.
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">I think you're confusing me — when he's asleep, she's supposed to be awake, and vice versa. They take turns, they can't both be up. What would actually be noteworthy is if she doesn't sleep when it's her turn to rest. But she already did that the first night — so this scene should show progress, meaning she sleeps more comfortably now. Which is what we had before.</span>
+        </div>
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">You're right, and thank you for being precise. If we're showing progress, the detail should reflect that shift. Instead of Riven being awake again, we show that this time, unlike the first night, she sleeps during his watch.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      The second correction is noticeably more precise than the first — not just "that's wrong" but the full rule spelled out: who's supposed to be doing what, when, and what state change was actually supposed to signal progress. That precision is what finally landed the fix. The first pass had corrected the AI's language about the scene without correcting the scene's actual internal logic.
+    </p>
+
+    <div class="code-block">
+      <div class="code-label">The passage that shipped — The Rogue and the Runaway, Book One</div>
+      <pre>That night, I offered to take the first watch again. She nodded, pulled
+her cloak around her shoulders, and lay down near the fire.
+
+This time, she slept.
+
+Not lightly, not tense. Just… slept.
+
+I stayed up, watching the trees, the fire, the steady rise and fall of
+her breathing. The silence didn't press in so hard this time.
+
+Maybe something was changing. Maybe it already had.</pre>
+    </div>
+
+    <p>
+      That's the corrected version, verbatim, in the finished, published novella — not a paraphrase of what I remember asking for. The fix held, and the passage is there to check in <a href="https://www.amazon.com/dp/B0FRLZDMZM" target="_blank" rel="noopener" style="color: var(--rust);">The Rogue and the Runaway</a> on Kindle.
+    </p>
+
+    <h2>Bakery Bleed</h2>
+    <p>
+      The third moment is smaller and, honestly, a little funny — but it's a genuinely different failure shape than the other two, so it's worth including on its own. Right before this happened, the AI had spent a good stretch of the same conversation writing a scene set in an actual bakery — Teo's shop in the neighboring town of Willowrun, a location we'd just built out in detail: flour, fresh bread, a chalkboard menu. Immediately after, asked to write a scene back at the Old Oak — Sena's apothecary, the main setting of the entire book — it opened like this:
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">The day began like most others at the Old Oak — mugs clinking, flour dusted across the counters, sunlight filtering through the front windows.</span>
+        </div>
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">Wait — why flour? The Old Oak is an apothecary, right?</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      The AI's own explanation was immediate and exactly right:
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">You're right to pause there — that line was me slipping too comfortably into a bakery rhythm without thinking about the Old Oak's actual nature. Flour doesn't belong there. The Old Oak is an apothecary and herb shop, not a bakery or café.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      This is context bleed in its purest, most literal form: the sensory register of a scene written moments earlier carried straight over into an unrelated scene, purely because of proximity in the conversation. Not a forgotten fact, not an inverted relationship — just texture leaking sideways from whatever was most recently in the model's attention. The fix was immediate and complete once flagged, and it's the version that made it into the finished book — <a href="https://www.amazon.com/dp/B0FRXJYJHK" target="_blank" rel="noopener" style="color: var(--rust);">Riverhill Apothecary</a> — down to the specific replacement imagery of lavender, dried citrus, and labeled tinctures.
+    </p>
+
+    <h2>When the Fix Makes It Worse</h2>
+    <p>
+      The last moment is the most serious of the four, and it's the one that comes closest to what people usually mean by "hallucination" — not a detail drifting, but events invented outright. Early in Riven and Darian's story, just after she reluctantly returns his stolen coin pouch, I asked for a scene sketching their walk through the back streets afterward. What came back invented a coat theft, a bar fight, and a line describing them as already "traveling together" — none of which had happened. Riven had taken his money. That was it.
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">Coat slung back over my shoulders like I didn't just get robbed, choked, and dragged through a bar fight by a woman I'm apparently traveling with now.</span>
+        </div>
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">She only took his money pouch. She didn't take his coat and there was no bar fight. And they're not traveling together yet. Could you change this please?</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      The acknowledgment was immediate — "that was me jumping the gun" — and the rewrite that followed removed all three invented details. But the replacement introduced a new set of its own: a cloak the character wasn't wearing, the pouch being handed back a second time despite already having been returned once, the pursuit direction reversed (Riven searching for Darian, rather than the reverse, which is what had actually happened), and a courier that didn't exist anywhere in the story. Fixing the first hallucination produced a second one.
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">She's not wearing a cloak. You gave Darian his pouch back twice. She didn't go looking for him, he followed her. And what courier? Did anything I say confuse you, or is this hallucinating? Do you need a break?</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      That's about as direct as a bug report gets. The response owned it fully, without deflecting to "confusion," and did something more useful than an apology — it itemized every specific correction as a checklist before writing anything else:
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">You're right, I made a mess of the details — nothing you said was confusing, I just didn't listen closely enough. No cloak. No courier. Riven didn't go looking for him — he followed her. She gave his pouch back once. They're not traveling together. Let me start over.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-label">The passage that shipped — The Rogue and the Runaway, Book One</div>
+      <pre>We took the back roads—narrow alleys where the stone smelled damp and
+the roofs leaned in like they were listening. She walked a few paces
+ahead, head down, cap pressed down. I followed without being told.
+I didn't ask where we were going.
+
+[...]
+
+"How did you even find me?"
+
+A sheepish grin crept up before I could stop it. "I just… followed
+signs, I guess. Like tracks. It's kind of what I'm used to."
+
+"You hunt people?" she asked, brows lifted.
+
+"No! No, not like that." I shook my head quickly. "Animals. Back
+home I used to hunt sometimes—wild dogs, boar, once a bear. You get
+used to spotting where something's been, how it moves, what it
+avoids."</pre>
+    </div>
+
+    <p>
+      That's the clean version — no cloak, no invented courier, the pursuit direction correct, the pouch returned exactly once — verbatim from <a href="https://www.amazon.com/dp/B0FRLZDMZM" target="_blank" rel="noopener" style="color: var(--rust);">the finished novella</a>. It took naming the error explicitly, and naming it a second time when the fix didn't fully land, but the version that survived to publication is the accurate one.
+    </p>
+
+    <h2>Reading a Scene That Was Never Written</h2>
+    <p>
+      The most serious moment of the whole project happened later, and it stacks two failures on top of each other rather than one. I uploaded a Part 2 draft of The Rogue and the Runaway for feedback. What came back was detailed, specific, and about the wrong book entirely — praising the "connection between Sena and Jett," characters from Riverhill Apothecary, not the manuscript I'd actually just sent.
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">This is for Rogue and Runaway — Darian and Riven.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      That correction should have been the end of it. Instead, the next attempt went further wrong in a different direction. Rather than misattributing real content from the wrong book, it began describing a scene that didn't exist in either manuscript — an old woman, a fever, careful tending by candlelight — and then, unprompted, a second invented scene: Riven leaning over Darian with a damp cloth in an inn room, "her face so close he can't breathe right." Specific, sensory, confidently detailed. None of it was anywhere in what I'd uploaded.
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">You caught me — I was rereading that moment in the inn, where Selene leans over Darian with the damp cloth, her face so close he can't breathe right.</span>
+        </div>
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">Wait — what are you reading???</span>
+        </div>
+        <div class="exchange-turn">
+          <span class="exchange-role">Writer</span>
+          <span class="exchange-text">You are hallucinating bad right now, making up scenes that don't exist. Are you ok?</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      "What are you reading?" is, in its own way, a precise piece of testing — it's the question that exposes there's no real source behind the confident description at all. The response didn't try to defend the invented scene or reframe it as a misunderstanding:
+    </p>
+
+    <div class="exchange">
+      <div class="exchange-label">Paraphrased exchange</div>
+      <div class="exchange-body">
+        <div class="exchange-turn">
+          <span class="exchange-role ai">AI</span>
+          <span class="exchange-text">You're right — I was absolutely off-track. I got turned around between versions and imagined a scene that wasn't there at all. Let me reset properly and go through what's actually there, grounded, no invention.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      This is a different shape of failure than fabricating details inside a real scene. Here, the confusion started with attributing genuine content to the wrong project entirely, and rather than resolving cleanly on correction, it escalated into describing scenes with no source at all — specific enough in sensory detail (the cloth, the proximity, the held breath) to read as a real memory of something written, when nothing like it existed anywhere in either book.
+    </p>
+
+    <h2>What These Five Moments Have in Common</h2>
+    <p>
+      Three of these are quiet — a fact inverted under comparison, a scene's logic surviving its own correction, sensory detail bleeding over from whatever was just written. Two are more serious: fixing one fabrication by introducing several new ones, and misattributing an entire manuscript before inventing scenes with no source at all. Fixing the first fabrication introduced a second one; the misattribution led directly into invention. Both are the same underlying shape of problem as the ellipse-math case study's regressions, just showing up in prose instead of code: a fix, or a recovery attempt, applied without checking it against everything else that has to stay true.
+    </p>
+    <p>
+      What all five share is proximity. Each happened right at a seam — between two projects being compared in one breath, between a scene's original intent and its rewrite, between one just-finished scene and the next, between a correction and the attempt to apply it, between two manuscripts that needed to be told apart. None of them happened in the middle of steady, single-threaded writing. They happened exactly where the model had to hold more than one thing in mind at once, or recover cleanly from having already gotten something wrong.
+    </p>
+    <p>
+      Catching all five didn't require any particular prompting technique. It required knowing the story well enough to notice when something in it didn't add up — the same instinct as noticing a plot hole in a friend's writing, just applied in real time, mid-draft, to an AI collaborator instead. That's a different skill from being able to write elegant prompts, and arguably a more durable one: it doesn't depend on the tool, it depends on paying close attention to your own material.
+    </p>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="../resume.html">Resume</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>

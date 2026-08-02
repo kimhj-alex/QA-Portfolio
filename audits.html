@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audits — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    .page-header {
+      padding: 80px 48px 64px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: end;
+    }
+
+    .page-header-left h1 {
+      font-family: var(--serif);
+      font-size: clamp(48px, 6vw, 88px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-header-left h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--grey);
+      font-size: 0.6em;
+      display: block;
+      margin-top: 8px;
+      letter-spacing: 0;
+    }
+
+    .page-header-right p {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--grey);
+      max-width: 440px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 12px;
+    }
+
+    /* ── TOP TWO CARDS ── */
+    .audits-grid-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .audit-card {
+      padding: 56px 48px;
+      border-right: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .audit-card:last-child { border-right: none; }
+
+    .audit-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 3px;
+      background: var(--rust);
+      transition: width 0.3s ease;
+    }
+
+    .audit-card:hover { background: #f5f3ef; }
+    .audit-card:hover::after { width: 100%; }
+    .audit-card:hover .audit-card-cta { color: var(--rust); }
+
+    /* ── FULL WIDTH CARD ── */
+    .audit-card-full {
+      display: block;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .audit-card-full::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 3px;
+      background: var(--rust);
+      transition: width 0.3s ease;
+    }
+
+    .audit-card-full:hover { background: #f5f3ef; }
+    .audit-card-full:hover::after { width: 100%; }
+    .audit-card-full:hover .audit-card-cta { color: var(--rust); }
+
+    .audit-card-full-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 56px 48px;
+    }
+
+    .audit-card-full-left {
+      padding-right: 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .audit-card-full-middle {
+      padding: 0 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .audit-card-full-right { padding-left: 48px; }
+
+    /* ── SHARED ── */
+    .audit-card-number {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .audit-card-title {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 44px);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .audit-card-subtitle {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--grey);
+      margin-top: 4px;
+    }
+
+    .audit-card-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--grey);
+      line-height: 1.8;
+    }
+
+    .audit-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-top: auto;
+      transition: color 0.2s;
+    }
+
+    /* ── FINDINGS LIST ── */
+    .findings-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .findings-list li {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--black);
+    }
+
+    .findings-list li:first-child { border-top: 1px solid var(--border); }
+
+    .finding-id-small {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--rust);
+      letter-spacing: 0.06em;
+    }
+
+    .sev-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+      white-space: nowrap;
+    }
+
+    .sev-high   { border-color: var(--rust); color: var(--rust); }
+    .sev-medium { border-color: #d4a800; color: #a07d00; }
+    .sev-low    { border-color: #5a9e6f; color: #3a7a52; }
+
+    /* ── METHOD STRIP ── */
+    .method-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .method-strip-left {
+      padding: 56px 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .method-strip-right { padding: 56px 48px; }
+
+    .method-pull {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2vw, 26px);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--black);
+    }
+
+    .method-pull strong {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--rust);
+    }
+
+    .method-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--grey);
+    }
+
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+    .footer-right { display: flex; gap: 28px; }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header { animation: fadeUp 0.5s ease both; }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header { grid-template-columns: 1fr; padding: 48px 24px 40px; gap: 24px; }
+      .audits-grid-top { grid-template-columns: 1fr; }
+      .audit-card { padding: 40px 24px; border-right: none; border-bottom: 1px solid var(--border); }
+      .audit-card-full-inner { grid-template-columns: 1fr; padding: 40px 24px; gap: 32px; }
+      .audit-card-full-left { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 32px; }
+      .audit-card-full-middle { border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 32px; }
+      .audit-card-full-right { padding-left: 0; }
+      .method-strip { grid-template-columns: 1fr; }
+      .method-strip-left { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 24px; }
+      .method-strip-right { padding: 40px 24px; }
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="audits.html" class="active">Audits</a></li>
+      <li><a href="bug-reports.html">Bug Reports</a></li>
+      <li><a href="gen-ai-cases.html">Gen AI Cases</a></li>
+      <li><a href="resume.html">Resume</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <p class="section-label">Deep Dive</p>
+      <h1>Platform<br>Audits
+        <em>3 audits · 16 findings</em>
+      </h1>
+    </div>
+    <div class="page-header-right">
+      <p>Structured exploratory audits of real platforms — each audit documents multiple findings, patterns, and severity assessments across a full session of use. All findings discovered during actual use, not controlled test environments.</p>
+    </div>
+  </header>
+
+  <!-- TOP TWO: GitHub + ISTQB -->
+  <div class="audits-grid-top">
+
+    <a href="audits/github-audit.html" class="audit-card">
+      <div>
+        <p class="audit-card-number">Audit 01</p>
+        <h2 class="audit-card-title">GitHub</h2>
+        <p class="audit-card-subtitle">Usability Audit</p>
+      </div>
+      <p class="audit-card-desc">Four usability and discoverability findings uncovered during active use of GitHub's web interface — from hidden UI affordances to silent failure states and browser-specific regressions.</p>
+      <div>
+        <p class="section-label">Findings</p>
+        <ul class="findings-list">
+          <li><span class="finding-id-small">GH-001</span><span>Folder creation requires prior knowledge — no UI affordance</span><span class="sev-badge sev-medium">Medium</span></li>
+          <li><span class="finding-id-small">GH-002</span><span>No real-time deployment feedback or propagation transparency</span><span class="sev-badge sev-high">High</span></li>
+          <li><span class="finding-id-small">GH-003</span><span>Delete button inaccessible on Brave</span><span class="sev-badge sev-high">High</span></li>
+          <li><span class="finding-id-small">GH-004</span><span>TTL field undocumented in custom domain DNS setup</span><span class="sev-badge sev-medium">Medium</span></li>
+        </ul>
+      </div>
+      <span class="audit-card-cta">View Full Audit →</span>
+    </a>
+
+    <a href="audits/istqb-audit.html" class="audit-card">
+      <div>
+        <p class="audit-card-number">Audit 02</p>
+        <h2 class="audit-card-title">ISTQB</h2>
+        <p class="audit-card-subtitle">Website Audit</p>
+      </div>
+      <p class="audit-card-desc">Five findings from the official ISTQB certification site — covering search filter logic errors, broken internationalization, accessibility gaps, and a blank-screen UI failure.</p>
+      <div>
+        <p class="section-label">Findings</p>
+        <ul class="findings-list">
+          <li><span class="finding-id-small">IS-001</span><span>Search filter excludes valid accredited provider from results</span><span class="sev-badge sev-high">High</span></li>
+          <li><span class="finding-id-small">IS-002</span><span>Glossary translation incomplete in Spanish and Korean</span><span class="sev-badge sev-medium">Medium</span></li>
+          <li><span class="finding-id-small">IS-003</span><span>Quiz page appears blank on load with no guidance</span><span class="sev-badge sev-medium">Medium</span></li>
+          <li><span class="finding-id-small">IS-004</span><span>Glossary PDF download hidden behind unlabeled icon</span><span class="sev-badge sev-medium">Medium</span></li>
+          <li><span class="finding-id-small">IS-005</span><span>Accessibility widget unreachable via keyboard — Brave only</span><span class="sev-badge sev-high">High</span></li>
+        </ul>
+      </div>
+      <span class="audit-card-cta">View Full Audit →</span>
+    </a>
+
+  </div>
+
+  <!-- FULL WIDTH: Shoebox Planner -->
+  <a href="audits/shoebox-planner-audit.html" class="audit-card-full">
+    <div class="audit-card-full-inner">
+
+      <div class="audit-card-full-left">
+        <p class="audit-card-number">Audit 03</p>
+        <h2 class="audit-card-title">Shoebox<br>Planner</h2>
+        <p class="audit-card-subtitle">Self-Audit · v1.0-beta</p>
+        <p class="audit-card-desc" style="margin-top:16px;">A structured self-audit of a web app I built from scratch — tested across desktop and iPad using checklist, exploratory, and cross-device regression testing. Seven bugs found across touch controls, undo behavior, and save/load functionality.</p>
+        <span class="audit-card-cta" style="margin-top:24px; display:inline-flex;">View Full Audit →</span>
+      </div>
+
+      <div class="audit-card-full-middle">
+        <p class="section-label">Desktop Findings</p>
+        <ul class="findings-list">
+          <li><span class="finding-id-small">RP-001</span><span>Undo doesn't work for furniture in saved rooms</span><span class="sev-badge sev-medium">Medium</span></li>
+          <li><span class="finding-id-small">RP-002</span><span>Clicking a layer doesn't highlight furniture in room</span><span class="sev-badge sev-low">Low</span></li>
+          <li><span class="finding-id-small">RP-003</span><span>Multi-step undo bleeds into wrong furniture item</span><span class="sev-badge sev-high">High</span></li>
+          <li><span class="finding-id-small">RP-004</span><span>Saved room does not restore layer order</span><span class="sev-badge sev-medium">Medium</span></li>
+        </ul>
+      </div>
+
+      <div class="audit-card-full-right">
+        <p class="section-label">iPad Findings</p>
+        <ul class="findings-list">
+          <li><span class="finding-id-small">RP-001</span><span>Undo doesn't work for furniture in saved rooms</span><span class="sev-badge sev-medium">Medium</span></li>
+          <li><span class="finding-id-small">RP-005</span><span>Layer scroll conflicts with reorder gesture on touch</span><span class="sev-badge sev-high">High</span></li>
+          <li><span class="finding-id-small">RP-006</span><span>Context menu options unreachable on touch</span><span class="sev-badge sev-high">High</span></li>
+          <li><span class="finding-id-small">RP-007</span><span>Color change does not work on iPad</span><span class="sev-badge sev-high">High</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </a>
+
+  <!-- METHODOLOGY -->
+  <div class="method-strip">
+    <div class="method-strip-left">
+      <p class="section-label">Methodology</p>
+      <p class="method-pull">"Structured sessions of <strong>real use</strong> — not scripted tests on demo environments."</p>
+    </div>
+    <div class="method-strip-right">
+      <p class="method-body">Each audit began as ordinary use of a platform I was actively working with. When friction appeared, I documented it — steps to reproduce, expected vs actual behavior, severity rationale, and suggested fixes. The Shoebox Planner audit added a checklist and cross-device regression layer, testing all core features on desktop first, then repeating on iPad to surface touch-specific regressions.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="resume.html">Resume</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>

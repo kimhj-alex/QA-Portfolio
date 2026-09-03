@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BR-001 Instagram — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      min-height: 280px;
+    }
+
+    .page-header-left {
+      padding: 64px 48px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb a {
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--rust); }
+    .breadcrumb span { color: var(--rust); margin: 0 8px; }
+
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 4vw, 60px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-family: var(--serif);
+      font-size: clamp(16px, 1.8vw, 22px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--grey);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .page-header-meta {
+      margin-top: 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-header-right {
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ── META TABLE ── */
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .meta-table tr { border-bottom: 1px solid var(--border); }
+    .meta-table tr:first-child { border-top: 1px solid var(--border); }
+
+    .meta-table td {
+      padding: 12px 0;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    .meta-table td:first-child {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      width: 140px;
+      padding-right: 16px;
+    }
+
+    .meta-table td:last-child {
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--black);
+      padding: 12px 24px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .download-btn:hover { background: var(--rust); }
+
+    /* ── BADGES ── */
+    .sev-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .sev-high   { border-color: var(--rust); color: var(--rust); }
+    .sev-medium { border-color: #d4a800; color: #a07d00; }
+    .sev-low    { border-color: #5a9e6f; color: #3a7a52; }
+
+    .status-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+    }
+
+    .tag.accent { color: var(--rust); border-color: var(--rust); }
+
+    /* ── REPORT BODY ── */
+    .report-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-main {
+      padding: 64px 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .report-sidebar {
+      padding: 64px 48px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 16px;
+    }
+
+    .report-summary {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--black);
+      margin-bottom: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-block {
+      margin-bottom: 40px;
+    }
+
+    .report-block-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 14px;
+    }
+
+    .report-block p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+    }
+
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .steps-list li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--black);
+    }
+
+    .step-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      margin-top: 3px;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar-meta-block {
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .highlight-box {
+      background: #f9f8f6;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--rust);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+
+    .highlight-box-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 8px;
+    }
+
+    .highlight-box p {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--black);
+    }
+
+    .highlight-box strong {
+      font-weight: 500;
+    }
+
+    /* ── SCREENSHOTS ── */
+    .screenshots-section {
+      padding: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .screenshots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .screenshot-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .screenshot-item img {
+      cursor: zoom-in;
+      transition: opacity 0.15s;
+    }
+
+    .screenshot-item img:hover {
+      opacity: 0.85;
+    }
+
+    .lightbox-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 17, 16, 0.92);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      cursor: zoom-out;
+    }
+
+    .lightbox-overlay.open {
+      display: flex;
+    }
+
+    .lightbox-overlay img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 24px;
+      right: 32px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: none;
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+
+    .screenshot-placeholder {
+      aspect-ratio: 9/16;
+      background: #f0ede8;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .screenshot-placeholder.desktop {
+      aspect-ratio: 16/9;
+    }
+
+    .screenshot-caption {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── NAV BETWEEN REPORTS ── */
+    .report-nav {
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-nav a {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .report-nav a:hover { color: var(--rust); }
+
+    .report-nav-back {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+
+    .footer-right {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header-left { animation: fadeUp 0.5s ease both; }
+    .page-header-right { animation: fadeUp 0.5s ease both 0.15s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header,
+      .report-body { grid-template-columns: 1fr; }
+      .page-header-left,
+      .report-main { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 24px; }
+      .page-header-right,
+      .report-sidebar { padding: 40px 24px; }
+      .screenshots-section { padding: 32px 24px; }
+      .report-nav { padding: 24px; }
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../audits.html">Audits</a></li>
+      <li><a href="../bug-reports.html" class="active">Bug Reports</a></li>
+      <li><a href="../gen-ai-cases.html">Gen AI Cases</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <div>
+        <p class="breadcrumb">
+          <a href="../bug-reports.html">Bug Reports</a>
+          <span>→</span>
+          BR-001
+        </p>
+        <h1 class="page-title">Instagram</h1>
+        <p class="page-subtitle">Ad Pricing Information Incomplete on Mobile Compared to Desktop</p>
+      </div>
+      <div class="page-header-meta">
+        <span class="tag accent">High Severity</span>
+        <span class="tag">Ads · Pricing</span>
+        <span class="tag">Cross-Platform</span>
+        <span class="tag">iOS</span>
+      </div>
+    </div>
+
+    <div class="page-header-right">
+      <table class="meta-table">
+        <tr>
+          <td>ID</td>
+          <td>BR-001</td>
+        </tr>
+        <tr>
+          <td>Severity</td>
+          <td><span class="sev-badge sev-high">High</span></td>
+        </tr>
+        <tr>
+          <td>Priority</td>
+          <td><span class="sev-badge sev-high">High</span></td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td><span class="status-badge">Found Apr 2026</span></td>
+        </tr>
+        <tr>
+          <td>Platform</td>
+          <td>Instagram</td>
+        </tr>
+        <tr>
+          <td>Environment</td>
+          <td>iPhone · iOS · Instagram app · macOS · Brave · instagram.com</td>
+        </tr>
+        <tr>
+          <td>Feature Area</td>
+          <td>Ads · Pricing · Cross-platform</td>
+        </tr>
+        <tr>
+          <td>Tester</td>
+          <td>Hyeji Kim (Alex)</td>
+        </tr>
+        <tr>
+          <td>Date</td>
+          <td>2026</td>
+        </tr>
+      </table>
+    </div>
+  </header>
+
+  <!-- REPORT BODY -->
+  <div class="report-body">
+
+    <!-- MAIN -->
+    <div class="report-main">
+
+      <div class="report-block">
+        <p class="section-label">Summary</p>
+        <p class="report-summary">
+          When setting up a boosted post through the Instagram iOS app, the Apple service fee — a significant additional charge on top of the advertised ad budget — is not disclosed as a concrete amount at any point during the setup flow. The fee appears as "To be calculated" on the Budget & duration screen and is absent entirely from the Review screen. The full total including fees is only revealed at the final Payment step, where an ad budget of ₩73,388 becomes a total charge of ₩106,092 — an increase of approximately 45%. That gap comes from the Apple service fee (₩28,934) and estimated taxes (₩9,645) applied on top of the remaining funds needed to cover the budget. By contrast, the desktop version of the same ad setup shows zero additional fees and explicitly informs the user they are avoiding the Apple service fee by boosting on the web. The mobile flow withholds the true cost until the final step and does not prompt users to consider completing the flow on desktop where the fee does not apply.
+        </p>
+      </div>
+
+      <div class="report-block">
+        <p class="report-block-label">Steps to Reproduce</p>
+        <ol class="steps-list">
+          <li><span class="step-num">1.</span><span>Open the Instagram app on iOS and navigate to a post eligible for boosting</span></li>
+          <li><span class="step-num">2.</span><span>Tap Boost post and proceed through the ad setup flow</span></li>
+          <li><span class="step-num">3.</span><span>On the Budget & duration screen — observe Apple service fee is listed as "To be calculated" with no estimated amount</span></li>
+          <li><span class="step-num">4.</span><span>Proceed to the Review screen — observe no Apple service fee or total including fees is displayed</span></li>
+          <li><span class="step-num">5.</span><span>Tap Add funds and proceed to the Payment screen</span></li>
+          <li><span class="step-num">6.</span><span>Observe: the true total is now shown for the first time — ₩106,092 vs the advertised ad budget of ₩73,388</span></li>
+          <li><span class="step-num">7.</span><span>Abandon the mobile flow and repeat the same ad setup on desktop at instagram.com</span></li>
+          <li><span class="step-num">8.</span><span>Observe: the Payment summary shows ₩0 in additional fees and explicitly states the Apple service fee is being avoided by boosting on the web</span></li>
+        </ol>
+      </div>
+
+      <div class="report-block">
+        <p class="report-block-label">Expected Result</p>
+        <p>The Apple service fee is disclosed as a concrete estimated amount early in the mobile ad setup flow — at minimum on the Budget & duration screen — so users can make an informed decision before reaching the final payment step. Users are also informed at the start of the mobile flow that completing the setup on desktop avoids the fee entirely.</p>
+      </div>
+
+      <div class="report-block">
+        <p class="report-block-label">Actual Result</p>
+        <p>The Apple service fee is shown only as "To be calculated" throughout the mobile setup flow and does not appear as a concrete amount until the final Payment screen. The desktop alternative — which carries no additional fees — is not surfaced during the mobile flow. Users who complete the process on mobile without prior knowledge of the fee structure are presented with a total approximately 45% higher than the ad budget they selected, only at the point of payment.</p>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="report-sidebar">
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Severity Rationale</p>
+        <div class="highlight-box">
+          <p class="highlight-box-label">Why High</p>
+          <p>A nearly <strong>45% cost increase</strong> disclosed only at the final payment step constitutes a significant pricing transparency failure. Users who set a budget expecting to pay ₩73,388 are presented with a ₩106,092 charge with no prior warning. The desktop flow avoids this entirely — meaning the issue is platform-specific and correctable.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Key Discrepancy</p>
+        <div class="highlight-box">
+          <p class="highlight-box-label">Mobile vs Desktop</p>
+          <p><strong>Mobile (iOS app)</strong><br>Ad budget: ₩73,388<br>Apple service fee: ₩28,934<br>Estimated taxes: ₩9,645<br>Total: ₩106,092</p>
+        </div>
+        <div class="highlight-box">
+          <p class="highlight-box-label">Desktop (instagram.com)</p>
+          <p><strong>Ad budget:</strong> ₩73,388<br><strong>Estimated tax:</strong> ₩0<br><strong>Total:</strong> ₩73,388<br><br>Desktop explicitly states: "You're avoiding an Apple service fee by boosting on the web."</p>
+        </div>
+      </div>
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Suggested Fix</p>
+        <div class="highlight-box">
+          <p>Display an estimated Apple service fee on the Budget & duration screen as soon as a budget is entered. Add a prompt early in the mobile flow informing users that boosting on desktop avoids the Apple service fee entirely.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCREENSHOTS -->
+  <section class="screenshots-section">
+    <p class="section-label">Screenshots</p>
+    <div class="screenshots-grid">
+      
+      <div class="screenshot-item">
+        <img src="../assets/screenshots/instagram-01.png" alt="Budget screen showing fee as To be calculated" style="width:100%; display:block;" onclick="openLightbox(this.src, this.alt)" />
+        <p class="screenshot-caption">01 — Budget screen (mobile)</p>
+      </div>
+
+      <div class="screenshot-item">
+        <img src="../assets/screenshots/instagram-02.png" alt="Review screen with no fee shown" style="width:100%; display:block;" onclick="openLightbox(this.src, this.alt)" />
+        <p class="screenshot-caption">02 — Review screen (mobile)</p>
+      </div>
+
+      <div class="screenshot-item">
+        <img src="../assets/screenshots/instagram-03.png" alt="Payment screen showing total: ₩106,092" style="width:100%; display:block;" onclick="openLightbox(this.src, this.alt)" />
+        <p class="screenshot-caption">03 — Payment screen (mobile)</p>
+      </div>
+
+      <div class="screenshot-item">
+        <img src="../assets/screenshots/instagram-04.png" alt="Modal explaining the Apple fee" style="width:100%; display:block;" onclick="openLightbox(this.src, this.alt)" />
+        <p class="screenshot-caption">04 — Fee explanation modal</p>
+      </div>
+
+      <div class="screenshot-item">
+        <img src="../assets/screenshots/instagram-05.png" alt="Desktop payment summary showing total: ₩73,388 · ₩0 fees" style="width:100%; display:block;" onclick="openLightbox(this.src, this.alt)" />
+        <p class="screenshot-caption">05 — Payment summary (desktop)</p>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox(); event.stopPropagation();">Close ✕</button>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+
+  <!-- REPORT NAV -->
+  <div class="report-nav">
+    <a href="../bug-reports.html">← All Bug Reports</a>
+    <a href="tiktok-follow.html">Next Report →</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="../resume.html">Resume</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    function openLightbox(src, alt) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-img').alt = alt;
+      document.getElementById('lightbox').classList.add('open');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+
+</body>
+</html>

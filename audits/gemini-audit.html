@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gemini Usability & Reliability Audit — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      min-height: 280px;
+    }
+
+    .page-header-left {
+      padding: 64px 48px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb a {
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--rust); }
+    .breadcrumb span { color: var(--rust); margin: 0 8px; }
+
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 4vw, 60px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--grey);
+      margin-top: 8px;
+    }
+
+    .page-header-meta {
+      margin-top: 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-header-right {
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ── AUDIT META TABLE ── */
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .meta-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-table tr:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-table td {
+      padding: 12px 0;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    .meta-table td:first-child {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      width: 140px;
+      padding-right: 16px;
+    }
+
+    .meta-table td:last-child {
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--black);
+      padding: 12px 24px;
+      text-decoration: none;
+      transition: background 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .download-btn:hover { background: var(--rust); }
+
+    /* ── SUMMARY TABLE ── */
+    .summary-section {
+      border-bottom: 1px solid var(--border);
+      padding: 48px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .summary-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border);
+      background: var(--white);
+    }
+
+    .summary-table td {
+      padding: 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .summary-table tr:hover td { background: #f5f3ef; }
+
+    .summary-table td:first-child {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      white-space: nowrap;
+      width: 80px;
+    }
+
+    .sev-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .sev-high   { border-color: var(--rust); color: var(--rust); }
+    .sev-medium { border-color: #d4a800; color: #a07d00; }
+    .sev-low    { border-color: #5a9e6f; color: #3a7a52; }
+
+    .status-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    /* ── FINDINGS ── */
+    .findings-section {
+      padding: 0;
+    }
+
+    .findings-header {
+      padding: 48px 48px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 32px 48px;
+      display: grid;
+      grid-template-columns: 80px 1fr auto auto;
+      align-items: center;
+      gap: 24px;
+      text-align: left;
+      transition: background 0.15s;
+    }
+
+    .finding-trigger:hover { background: #f5f3ef; }
+
+    .finding-id {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--rust);
+      letter-spacing: 0.08em;
+    }
+
+    .finding-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .finding-title {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--black);
+      text-align: left;
+    }
+
+    .finding-area {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    .finding-chevron {
+      font-size: 18px;
+      color: var(--grey);
+      transition: transform 0.3s ease, color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .finding.open .finding-chevron {
+      transform: rotate(180deg);
+      color: var(--rust);
+    }
+
+    /* ── FINDING BODY ── */
+    .finding-body {
+      display: none;
+      padding: 0 48px 48px;
+      border-top: 1px solid var(--border);
+      background: #f9f8f6;
+    }
+
+    .finding.open .finding-body { display: block; }
+
+    .finding-body-inner {
+      max-width: 800px;
+      padding-top: 40px;
+    }
+
+    .finding-summary {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding-block {
+      margin-bottom: 36px;
+    }
+
+    .finding-block-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 12px;
+    }
+
+    .finding-block p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+    }
+
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .steps-list li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--black);
+    }
+
+    .step-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      margin-top: 3px;
+    }
+
+    .finding-meta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .notes-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--rust);
+      padding: 20px 24px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--grey);
+    }
+
+    /* ── TAG ── */
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+    }
+
+    .tag.accent { color: var(--rust); border-color: var(--rust); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+
+    .footer-right {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header-left { animation: fadeUp 0.5s ease both; }
+    .page-header-right { animation: fadeUp 0.5s ease both 0.15s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+
+      .page-header { grid-template-columns: 1fr; }
+
+      .page-header-left {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 40px 24px;
+      }
+
+      .page-header-right { padding: 40px 24px; }
+
+      .summary-section { padding: 32px 24px; }
+
+      .finding-trigger {
+        grid-template-columns: 60px 1fr auto;
+        padding: 24px;
+        gap: 16px;
+      }
+
+      .finding-trigger .sev-badge { display: none; }
+
+      .finding-body { padding: 0 24px 32px; }
+      .findings-header { padding: 32px 24px 24px; }
+
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../audits.html" class="active">Audits</a></li>
+      <li><a href="../bug-reports.html">Bug Reports</a></li>
+      <li><a href="../gen-ai-cases.html">Gen AI Cases</a></li>
+      <li><a href="../resume.html">Resume</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <div>
+        <p class="breadcrumb">
+          <a href="../audits.html">Audits</a>
+          <span>→</span>
+          Audit 04
+        </p>
+        <h1 class="page-title">Gemini</h1>
+        <p class="page-subtitle">Usability &amp; Reliability Audit</p>
+      </div>
+      <div class="page-header-meta">
+        <span class="tag accent">5 Findings</span>
+        <span class="tag">Image Generation</span>
+        <span class="tag">Video Generation</span>
+        <span class="tag">App Reliability</span>
+      </div>
+    </div>
+
+    <div class="page-header-right">
+      <table class="meta-table">
+        <tr>
+          <td>Tester</td>
+          <td>Hyeji Kim (Alex)</td>
+        </tr>
+        <tr>
+          <td>Date</td>
+          <td>Aug 24 – Sep 7, 2026</td>
+        </tr>
+        <tr>
+          <td>Platform</td>
+          <td>Google Gemini (web &amp; iOS app)</td>
+        </tr>
+        <tr>
+          <td>Environment</td>
+          <td>Mac (Safari) — image &amp; video generation · iPhone, iPad — chat history</td>
+        </tr>
+        <tr>
+          <td>Scope</td>
+          <td>Background &amp; character image generation, video generation, app chat history</td>
+        </tr>
+        <tr>
+          <td>Total Findings</td>
+          <td>5</td>
+        </tr>
+      </table>
+    </div>
+  </header>
+
+  <!-- METHODOLOGY NOTE -->
+  <section class="summary-section" style="border-bottom: 1px solid var(--border);">
+    <p class="section-label">Methodology</p>
+    <p style="font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--black); max-width: 800px;">
+      These findings surfaced during real asset-generation work for a personal visual novel project, across several sessions between Aug 24 and Sep 7, 2026 — not through adversarial prompting or a scripted test plan. Every finding here follows the same check: don't accept a confident-sounding response at face value — verify it against what was actually asked, what the tool itself claims elsewhere in the same conversation, or an independent source (translation, source screenshots, a second device). Several of the findings below only became clear after an initial explanation — from Gemini — didn't hold up against that check.
+    </p>
+  </section>
+
+  <!-- SUMMARY OF FINDINGS -->
+  <section class="summary-section">
+    <p class="section-label">Summary of Findings</p>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Severity</th>
+          <th>Priority</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>GA-001</td>
+          <td>Object bleed persists across a corrected room transition</td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="status-badge">Found Sep 2026</span></td>
+        </tr>
+        <tr>
+          <td>GA-002</td>
+          <td>Style reference treated as subject; hair colors swapped after correction</td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Found Sep 2026</span></td>
+        </tr>
+        <tr>
+          <td>GA-003</td>
+          <td>Guided workflow instructed audio upload as supported, then rejected it twice</td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Found Sep 2026</span></td>
+        </tr>
+        <tr>
+          <td>GA-004</td>
+          <td>Every "silent" clip contained fabricated speech and sound design</td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
+          <td><span class="status-badge">Found Sep 2026</span></td>
+        </tr>
+        <tr>
+          <td>GA-005</td>
+          <td>Main chat list showed no saved chats while search returned full history</td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="status-badge">Found Sep 2026</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- FINDINGS -->
+  <section class="findings-section">
+    <div class="findings-header">
+      <p class="section-label">Individual Findings</p>
+    </div>
+
+    <!-- GA-001 -->
+    <div class="finding" id="ga-001">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GA-001</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Object bleed persists across a corrected room transition</span>
+          <span class="finding-area">Background generation · Cross-scene consistency</span>
+        </div>
+        <span class="sev-badge sev-medium">Medium</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-medium">Severity: Medium</span>
+            <span class="sev-badge sev-medium">Priority: Medium</span>
+            <span class="status-badge">Found Sep 2026</span>
+            <span class="tag">Mac (Safari) · Gemini Flash</span>
+          </div>
+          <p class="finding-summary">
+            Asked for a bedroom background, then a second, explicitly separate kitchen background for the same character. The first kitchen attempt reused the bedroom's layout and set dressing rather than generating a new room. After an explicit correction — "The kitchen would be downstairs, its own space. Do not remake the bedroom" — the output was a genuinely different, correctly laid-out kitchen (different room shape, new appliances, a different wall poster), but two specific personal items from the bedroom scene persisted into the kitchen with no reason to be there: the same Gundam figures from the bedroom's shelf, and the same backpack hanging by the door. A sign reading "Kitchen / Downstairs" appears taped to the in-frame door — suggesting the correction was registered as a label to add rather than a constraint that should have prevented reusing the previous scene's specific objects.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Request a bedroom background for a character, specifying dark colors, window, cherry blossoms outside</span></li>
+              <li><span class="step-num">2.</span><span>Approve the bedroom with minor revisions (lighting, wallpaper color, added furniture)</span></li>
+              <li><span class="step-num">3.</span><span>In the same conversation, request a second background: the same character's kitchen, described as simple, clean, with an island</span></li>
+              <li><span class="step-num">4.</span><span>Observe: the kitchen reuses the bedroom's room geometry and objects rather than generating a distinct space</span></li>
+              <li><span class="step-num">5.</span><span>Correct explicitly: "The kitchen would be downstairs, its own space. Do not remake the bedroom"</span></li>
+              <li><span class="step-num">6.</span><span>Observe: room geometry, layout, and wall décor are now correctly distinct — but the Gundam figures and backpack from the bedroom scene still appear in the kitchen</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>A request for a second, explicitly separate room should generate a new space independent of the first, including its set dressing. A correction naming the room as its own separate space should remove all carried-over scene-specific objects, not just fix the room's layout.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>The room's geometry and function were corrected, but two specific personal items from the previous scene persisted unprompted. The correction was partially applied — enough to look complete at a glance, not enough to fully separate the two scenes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GA-002 -->
+    <div class="finding" id="ga-002">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GA-002</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Style reference treated as subject; hair colors swapped after correction</span>
+          <span class="finding-area">Character &amp; scene generation · Reference handling</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="sev-badge sev-high">Priority: High</span>
+            <span class="status-badge">Found Sep 2026</span>
+            <span class="tag">Mac (Safari) · Gemini Flash</span>
+          </div>
+          <p class="finding-summary">
+            Across an ongoing poster-generation thread featuring two established visual novel characters, Sky and Lio, a new reference image was introduced solely to convey a different art style (dreamy, hazy watercolor). Rather than applying that style to the existing characters, the model progressively substituted the reference image's own character for Sky and Lio. The first response was a near-duplicate of the reference image, flipped horizontally. Once told explicitly that the reference was for style only and Lio and Sky should still appear, the model generated two characters who were both visual duplicates of the reference figure, rather than two distinct characters in that art style. After being given the actual Sky and Lio sprite sheets and asked directly to correct their hair color and faces, the output still did not match either character's design: it differentiated the two figures by giving them different hair colors, but assigned those colors to the wrong figure — the character in Sky's position and pose received Lio's brown hair, and the character in Lio's position received Sky's black hair — and both were rendered with lighter skin than either character's established design.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>In an ongoing thread, establish two distinct characters (Sky and Lio) across multiple correctly-generated posters</span></li>
+              <li><span class="step-num">2.</span><span>Attach a new reference image of an unrelated character, specifying it is for style only: "it has to be dreamy, hazy, like water color style anime"</span></li>
+              <li><span class="step-num">3.</span><span>Observe: the output is a near-duplicate of the reference image itself, flipped horizontally, rather than a new composition in that style</span></li>
+              <li><span class="step-num">4.</span><span>Clarify explicitly: "with Lio and Sky in it in that style, not exactly the same image. It's just reference"</span></li>
+              <li><span class="step-num">5.</span><span>Observe: the output now shows two characters, both matching the reference image's design, not Sky and Lio</span></li>
+              <li><span class="step-num">6.</span><span>Attach the established sprite sheets for both characters and ask directly: "Remember it's these two characters. You have to get their hair color and face right"</span></li>
+              <li><span class="step-num">7.</span><span>Observe: hair colors are now differentiated, but swapped between the two figures relative to their actual designs, and skin tone still doesn't match either character</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>An image explicitly introduced as a style reference should influence rendering style only. A direct correction naming the two established characters and providing their reference sprites should be sufficient to restore their correct, distinct appearance — including which color goes with which character.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>The style reference was treated as the subject to reproduce, first exactly, then as a duplicated pair. Even after being shown the correct sprites directly, the correction was only partially applied: color differentiation existed, but was bound to the wrong character, and skin tone was not corrected for either.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GA-003 -->
+    <div class="finding" id="ga-003">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GA-003</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Guided workflow instructed audio upload as supported, then rejected it twice</span>
+          <span class="finding-area">Video generation · Capability accuracy</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="sev-badge sev-high">Priority: High</span>
+            <span class="status-badge">Found Sep 2026</span>
+            <span class="tag">Mac (Safari) · Gemini Flash</span>
+          </div>
+          <p class="finding-summary">
+            Asked what steps were needed to generate a talking-to-camera video, the model returned a structured, numbered guide presenting audio upload as a first-class, explicitly supported option — "With Voice/Audio: If you have a recorded voiceover, script line, or audio file, you can upload the audio file (e.g., .mp3, .wav)" — and closed with a ready-to-use template prompt that included "(Attach your audio file if applicable)." Following those instructions exactly, including attaching a recorded ElevenLabs audio file alongside the reference image and a full scene description, produced the same rejection twice in a row: "I can't use audio input for video generation right now. Please try a prompt without audio." Only when asked directly why did the model explain that the video generation tool has never supported audio-driven input at all, and that a completely different multi-tool external workflow (silent clip generation, then third-party lip-sync software, then manual video editing) is required to achieve what was originally described as achievable in a single step.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Ask the model what steps are needed to generate a talking-to-camera vlog-style video of a character</span></li>
+              <li><span class="step-num">2.</span><span>Receive a structured guide listing audio file upload as a supported, recommended option, with a template prompt inviting an audio attachment</span></li>
+              <li><span class="step-num">3.</span><span>Follow the instructions exactly: attach a recorded audio file, a reference image, and a descriptive prompt matching the suggested format</span></li>
+              <li><span class="step-num">4.</span><span>Observe: request is rejected — "I can't use audio input for video generation right now"</span></li>
+              <li><span class="step-num">5.</span><span>Repeat the identical request once more</span></li>
+              <li><span class="step-num">6.</span><span>Observe: identical rejection</span></li>
+              <li><span class="step-num">7.</span><span>Ask why</span></li>
+              <li><span class="step-num">8.</span><span>Receive an explanation that audio-driven generation was never supported, along with a different recommended workflow requiring external tools</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>A guide describing how to accomplish a task should only present options the tool can actually perform. If audio input isn't supported, that should be stated before the person invests time recording audio and constructing a prompt around it — not discovered only after two identical, specific attempts.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>The model's own instructions actively invited an unsupported action, using a template that named audio attachment as a real option. The true capability limitation was disclosed only after the described workflow was attempted and failed twice, at which point a substantially different, more complex external workflow was offered instead.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GA-004 -->
+    <div class="finding" id="ga-004">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GA-004</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Every "silent" clip contained fabricated speech and sound design</span>
+          <span class="finding-area">Video generation · Content fabrication</span>
+        </div>
+        <span class="sev-badge sev-high">High</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-high">Severity: High</span>
+            <span class="sev-badge sev-high">Priority: High</span>
+            <span class="status-badge">Found Sep 2026</span>
+            <span class="tag">Mac (Safari) · Gemini Flash</span>
+          </div>
+          <p class="finding-summary">
+            After being told audio-driven generation wasn't supported (GA-003), the same thread continued using the tool's actual silent-clip generation path — the model's own recommended first step of its multi-tool workflow. Every video generated in this thread — the base clip and each subsequent edit — contained audio, despite no audio file, dialogue, or sound design ever being requested. This was not a single static audio track persisting across edits: transcribed independently (Google Translate), three separate generations produced three different Chinese sentences (roughly: "I want to change some grain, how did I just change it?"; "I want to change things up, it's so quiet here, listen to the music"; "I want to change to something quiet, that's fine too, listen to music"), along with ambient sound effects including book pages turning, bird chirping, and fabric movement — each generation fabricating new, internally coherent speech content and matching sound design independently. Because the tool explicitly labeled these as "silent" clips, there was no indication that audio needed to be checked at all; the fabricated audio went unnoticed for the first two generations and was only caught on review of the third. Asked why the audio was in Chinese, the model characterized the speech as "largely unintelligible 'gibberish'... rather than actual coherent sentences" and separately described hallucinated on-screen captions — neither of which matched the actual output: the speech was coherent, translatable Chinese each time, and no on-screen text was ever present in the video.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>In a thread where audio-driven video generation has been confirmed unsupported, request a silent video clip of a character talking to the camera, with no audio file attached</span></li>
+              <li><span class="step-num">2.</span><span>Approve and request edits to the resulting silent clips across multiple turns</span></li>
+              <li><span class="step-num">3.</span><span>Request another clip after a rate limit briefly interrupts generation</span></li>
+              <li><span class="step-num">4.</span><span>Observe: every resulting clip, not just one, contains audible speech and ambient sound effects</span></li>
+              <li><span class="step-num">5.</span><span>Translate the speech independently</span></li>
+              <li><span class="step-num">6.</span><span>Observe: each clip contains a different, coherent Chinese sentence, not a repeated clip and not meaningless phonetic filler</span></li>
+              <li><span class="step-num">7.</span><span>Ask the model to explain the audio</span></li>
+              <li><span class="step-num">8.</span><span>Observe: the explanation claims the speech is unintelligible gibberish and describes on-screen captions, neither of which matches what independent translation and visual review actually found</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>A video generation tool used with no audio input, and explicitly intended by the model's own recommended workflow to produce a silent clip, should not generate any audio at all. If it cannot reliably do this, that should be disclosed. A self-diagnosis of the behavior should accurately describe what was actually produced.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>Every generation in the thread fabricated new speech content and sound design independently, with real semantic content varying clip to clip, and matching ambient sound design (page-turning, bird sounds, fabric movement) consistent with each clip's visuals — despite the model's own labeling of these as "silent" clips and no audio ever being requested or provided. Because the tool explicitly presented the output as silent, there was no indication that audio needed to be checked at all. The model's later explanation mischaracterized the coherent, translatable speech as meaningless gibberish, and described on-screen captions that were never actually present.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Additional Notes</p>
+            <div class="notes-box">
+              A request to remove the tripod was correctly applied in one generation, then the tripod reappeared unprompted in a later generation, with no request to restore it. Separately, when the book was removed as requested, the visual edit was applied correctly — but the character's gestures still mimed holding and interacting with a book that was no longer on screen, and the fabricated audio still included page-flipping sound effects matching the removed prop. A single generation was internally inconsistent across its own visual, performance, and audio layers, each apparently generated without reference to what the others were actually depicting.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GA-005 -->
+    <div class="finding" id="ga-005">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">GA-005</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Main chat list showed no saved chats while search returned full history</span>
+          <span class="finding-area">App reliability · Data sync</span>
+        </div>
+        <span class="sev-badge sev-medium">Medium</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <div class="finding-meta-row">
+            <span class="sev-badge sev-medium">Severity: Medium</span>
+            <span class="sev-badge sev-medium">Priority: Medium</span>
+            <span class="status-badge">Found Sep 2026</span>
+            <span class="tag">iPhone vs. iPad · Gemini app</span>
+          </div>
+          <p class="finding-summary">
+            On iOS, the app's main chat list displayed "No saved chats — Recent chats will appear here so you can continue them later," despite an extensive chat history existing on the account. The chats were not actually missing: searching for them within the same app surfaced the full history correctly, each with accurate creation dates, and opening a chat from search results worked normally. Force-quitting and relaunching the app was attempted multiple times and did not resolve the issue. The main list only began displaying chats correctly again after switching to a different account and back. The same account had been used earlier that same day on a second device (iPad) at a cafe, where the full chat history displayed correctly in the main list. The iPhone issue was first noticed later that day, on a train, indicating the failure was specific to this device and this app instance rather than a server-side or account-wide data problem.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Steps to Reproduce</p>
+            <ol class="steps-list">
+              <li><span class="step-num">1.</span><span>Open the app on iOS with an account that has an existing chat history</span></li>
+              <li><span class="step-num">2.</span><span>Observe the main chat list: "No saved chats"</span></li>
+              <li><span class="step-num">3.</span><span>Use in-app search for any known chat title</span></li>
+              <li><span class="step-num">4.</span><span>Observe: the chat appears in search results with a correct date, and opens normally</span></li>
+              <li><span class="step-num">5.</span><span>Force-quit and relaunch the app</span></li>
+              <li><span class="step-num">6.</span><span>Observe: main list still shows no saved chats</span></li>
+              <li><span class="step-num">7.</span><span>Repeat step 5 several times</span></li>
+              <li><span class="step-num">8.</span><span>Observe: issue persists</span></li>
+              <li><span class="step-num">9.</span><span>Switch to a different account, then switch back to the original account</span></li>
+              <li><span class="step-num">10.</span><span>Observe: main list now displays the full chat history correctly</span></li>
+            </ol>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Expected Result</p>
+            <p>The main chat list should reflect the same underlying chat history that search draws from. If the list fails to load correctly, a standard app relaunch should be sufficient to refresh it.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Actual Result</p>
+            <p>The main list and search operated on inconsistent views of the same underlying data — one showed nothing, the other showed everything correctly. Relaunching the app, tried multiple times, did not resolve the discrepancy. Only a full account switch forced the list to repopulate, and a second device on the same account was unaffected earlier the same day, indicating this was a local, device-specific fault rather than missing or corrupted account data.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="../resume.html">Resume</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    function toggleFinding(btn) {
+      const finding = btn.closest('.finding');
+      const isOpen = finding.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.finding.open').forEach(f => f.classList.remove('open'));
+      // Open this one if it wasn't already open
+      if (!isOpen) finding.classList.add('open');
+    }
+  </script>
+
+</body>
+</html>

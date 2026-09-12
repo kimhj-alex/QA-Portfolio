@@ -634,7 +634,7 @@ expect(await getGapFromWall(square, 'left')).toBeCloseTo(2, 0.3);</pre>
 
           <div class="finding-block">
             <p class="finding-block-label">Moment 01 — Argued Out, Argued Back In</p>
-            <p style="margin-bottom: 16px;">A rotated square was flagged as needing its own test, separate from rotated rectangle. The counter-argument was that both shared the same rotated-corner bounding-box code, so one test covered both. That's true of the code — and beside the point. A user can rotate a square regardless of what the rectangle test already covers, and whether that stays inside the room is a real, separate, user-facing question. The correct call had already been made before the argument started; it just had to be held rather than talked out of.</p>
+            <p style="margin-bottom: 16px;">I stated a rotated square needed its own test, separate from rotated rectangle. The AI disagreed, arguing both shapes shared the same rotated-corner bounding-box code, so one test covered both. That's true of the code — and beside the point. A user can rotate a square regardless of what the rectangle test already covers, and whether that stays inside the room is a real, separate, user-facing question. I held the original call rather than accepting the AI's reasoning, and it ultimately conceded the point.</p>
             <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">test('rotated square (40°) clamps to room wall', async ({ page }) => {
   // ...same wall-drag pattern as plain square, at a
   // deliberately non-round rotation angle
@@ -643,7 +643,7 @@ expect(await getGapFromWall(square, 'left')).toBeCloseTo(2, 0.3);</pre>
 
           <div class="finding-block">
             <p class="finding-block-label">Moment 02 — The Ellipse Blind Spot, Again</p>
-            <p style="margin-bottom: 16px;">A rotated oval measured as sitting roughly 20px outside the room wall. It wasn't — visually, it stayed inside the whole time. The test was reading <code>getBoundingClientRect()</code>, which measures the shape's invisible rotated rectangular div, not the visible ellipse rendered inside it. That's the same category of mistake Case Study 01 documents in a different AI assistant, months earlier, on the same feature: treating a rotated, asymmetric shape as if rectangle math would cover it. The fix recomputed the true ellipse bounding box, using the app's own formula, applied independently in the test.</p>
+            <p style="margin-bottom: 16px;">A test the AI wrote measured a rotated oval as sitting roughly 20px outside the room wall. It wasn't — visually, it stayed inside the whole time, which I confirmed by looking at the app directly. I asked the AI directly whether it had written the test without accounting for ellipse math. It had: the test was reading <code>getBoundingClientRect()</code>, which measures the shape's invisible rotated rectangular div, not the visible ellipse rendered inside it. That's the same category of mistake Case Study 01 documents in a different AI assistant, months earlier, on the same feature: treating a rotated, asymmetric shape as if rectangle math would cover it. The AI then recomputed the true ellipse bounding box, using the app's own formula, applied independently in the test.</p>
             <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">const aabbW = 2 * Math.sqrt((rx * cos) ** 2 + (ry * sin) ** 2);
 const aabbH = 2 * Math.sqrt((rx * sin) ** 2 + (ry * cos) ** 2);
 // measuring the true ellipse, not the rectangular div around it</pre>
@@ -651,7 +651,7 @@ const aabbH = 2 * Math.sqrt((rx * sin) ** 2 + (ry * cos) ** 2);
 
           <div class="finding-block">
             <p class="finding-block-label">Moment 03 — Declared Done, Wasn't</p>
-            <p>Seven shapes were planned. Circle — plain, unrotated, equal width and height — was quietly dropped somewhere in the middle of the session and never written. The category got called complete anyway. It wasn't caught by re-reading the code or re-running anything; it was caught by counting the original list against what actually existed, and saying so directly rather than letting a confident "done" stand unchecked.</p>
+            <p>Seven shapes were planned. Seven shapes were planned. Circle — plain, unrotated, equal width and height — was quietly dropped somewhere in the middle of the session and never written. The AI declared the category complete anyway. It didn't notice the gap on its own; it took a direct correction — "you forgot circles" — before it was caught and added.</p>
           </div>
         </div>
       </div>

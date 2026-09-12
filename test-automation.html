@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Automation — Hyeji Kim (Alex)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:   #fafaf8;
+      --black:   #111110;
+      --rust:    #b84a2e;
+      --rust-lt: #e8e0d8;
+      --grey:    #6b6b67;
+      --border:  #d8d6d0;
+      --mono:    'DM Mono', monospace;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rust); }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--rust); }
+
+    .page-header {
+      padding: 80px 48px 64px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: end;
+    }
+
+    .page-header-left h1 {
+      font-family: var(--serif);
+      font-size: clamp(48px, 6vw, 88px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .page-header-left h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--grey);
+      font-size: 0.6em;
+      display: block;
+      margin-top: 8px;
+      letter-spacing: 0;
+    }
+
+    .page-header-right p {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--grey);
+      max-width: 440px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 12px;
+    }
+
+    /* ── INTRO STRIP ── */
+    .intro-strip {
+      padding: 48px;
+      border-bottom: 1px solid var(--border);
+      background: #f9f8f6;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    .intro-strip-left p {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2vw, 24px);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--black);
+    }
+
+    .intro-strip-left p strong {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--rust);
+    }
+
+    .intro-strip-right p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--grey);
+    }
+
+    /* ── CASE CARDS ── */
+    .cases-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .case-card {
+      display: block;
+      padding: 56px 48px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .case-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 3px;
+      background: var(--rust);
+      transition: width 0.3s ease;
+    }
+
+    .case-card:hover { background: #f5f3ef; }
+    .case-card:hover::after { width: 100%; }
+    .case-card:hover .case-card-cta { color: var(--rust); }
+
+    .case-card-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 48px;
+    }
+
+    .case-card-number {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--rust);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .case-card-title {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .case-card-subtitle {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--grey);
+      line-height: 1.7;
+      max-width: 380px;
+    }
+
+    .case-card-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .meta-pill {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .meta-pill.accent { border-color: var(--rust); color: var(--rust); }
+
+    .case-findings-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 14px;
+    }
+
+    .case-findings-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .case-findings-list li {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--black);
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .case-findings-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--rust);
+      font-size: 12px;
+    }
+
+    .case-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-top: 28px;
+      transition: color 0.2s;
+    }
+
+    /* ── METHOD STRIP ── */
+    .method-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .method-strip-left {
+      padding: 56px 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .method-strip-right { padding: 56px 48px; }
+
+    .method-pull {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2vw, 26px);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--black);
+    }
+
+    .method-pull strong {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--rust);
+    }
+
+    .method-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--grey);
+    }
+
+    /* ── FINDINGS-STYLE CATEGORY LIST ── */
+    .sev-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .sev-high   { border-color: var(--rust); color: var(--rust); }
+    .sev-medium { border-color: #d4a800; color: #a07d00; }
+    .sev-low    { border-color: #5a9e6f; color: #3a7a52; }
+
+    .findings-section { padding: 0; border-top: 1px solid var(--border); }
+
+    .findings-header {
+      padding: 48px 48px 32px;
+    }
+
+    .finding { border-bottom: 1px solid var(--border); }
+
+    .finding-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 32px 48px;
+      display: grid;
+      grid-template-columns: 60px 1fr auto auto;
+      align-items: center;
+      gap: 24px;
+      text-align: left;
+      transition: background 0.15s;
+    }
+
+    .finding-trigger:hover { background: #f5f3ef; }
+
+    .finding-id {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--rust);
+      letter-spacing: 0.08em;
+    }
+
+    .finding-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .finding-title {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--black);
+      text-align: left;
+    }
+
+    .finding-area {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    .finding-chevron {
+      font-size: 18px;
+      color: var(--grey);
+      transition: transform 0.3s ease, color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .finding.open .finding-chevron {
+      transform: rotate(180deg);
+      color: var(--rust);
+    }
+
+    .finding-body {
+      display: none;
+      padding: 0 48px 48px;
+      border-top: 1px solid var(--border);
+      background: #f9f8f6;
+    }
+
+    .finding.open .finding-body { display: block; }
+
+    .finding-body-inner {
+      max-width: 800px;
+      padding-top: 40px;
+    }
+
+    .finding-summary {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding-block { margin-bottom: 32px; }
+
+    .finding-block-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 12px;
+    }
+
+    .finding-block p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--black);
+    }
+
+    /* ── CROSS-REFERENCE ── */
+    .cross-ref {
+      padding: 32px 48px;
+      border-bottom: 1px solid var(--border);
+      background: #f9f8f6;
+    }
+
+    .cross-ref-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--rust);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .cross-ref-inner p {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--black);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .cross-ref-inner a {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rust);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    footer {
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left span { color: var(--rust); }
+    .footer-right { display: flex; gap: 28px; }
+
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--grey);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--rust); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header { animation: fadeUp 0.5s ease both; }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .page-header { grid-template-columns: 1fr; padding: 48px 24px 40px; gap: 24px; }
+      .intro-strip { grid-template-columns: 1fr; padding: 32px 24px; gap: 24px; }
+      .case-card { padding: 40px 24px; }
+      .case-card-inner { grid-template-columns: 1fr; gap: 28px; }
+      .method-strip { grid-template-columns: 1fr; }
+      .method-strip-left { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 24px; }
+      .method-strip-right { padding: 40px 24px; }
+      .cross-ref-inner { flex-direction: column; align-items: flex-start; }
+      footer { padding: 24px; flex-direction: column; gap: 16px; align-items: flex-start; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Hyeji Kim <span>(Alex)</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="audits.html">Audits</a></li>
+      <li><a href="bug-reports.html">Bug Reports</a></li>
+      <li><a href="gen-ai-cases.html">Gen AI Cases</a></li>
+      <li><a href="test-automation.html" class="active">Test Automation</a></li>
+      <li><a href="resume.html">Resume</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <p class="section-label">Test Automation</p>
+      <h1>Shoebox<br>Planner
+        <em>4 categories · one session · Playwright</em>
+      </h1>
+    </div>
+    <div class="page-header-right">
+      <p>Playwright coverage for Shoebox Planner, built in a single session with no prior experience in the tool. Four categories of real, automated tests — and three moments along the way, all inside the geometry category, where an AI's confident first answer turned out to be wrong, caught on instinct before it made it into the suite.</p>
+      <p style="margin-top: 20px;"><a href="https://github.com/kimhj-alex/shoebox-planner-tests" target="_blank" rel="noopener" style="font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rust); text-decoration: none;">View Test Repository →</a></p>
+    </div>
+  </header>
+
+  <!-- INTRO STRIP -->
+  <section class="intro-strip">
+    <div class="intro-strip-left">
+      <p>"First time using the tool <strong>didn't mean</strong> first time trusting it without checking."</p>
+    </div>
+    <div class="intro-strip-right">
+      <p>This was the first Playwright suite built for this portfolio, start to finish, in one afternoon — geometry, UI sync, persistence, and resize-limit coverage, all against the live app. Being new to the tool didn't change the standard: every AI-suggested test, selector, and assumption still got checked against what the app actually did, not what seemed reasonable. Three of those checks turned into their own case studies below, because catching them mattered more than the tool being unfamiliar.</p>
+    </div>
+  </section>
+
+  <!-- CROSS-REFERENCE -->
+  <div class="cross-ref">
+    <div class="cross-ref-inner">
+      <p>
+        This automation work covers the same app as the <strong>Shoebox Planner self-audit</strong> and <strong>Case Study 01</strong>, which covers the app's ellipse math during development.
+      </p>
+      <a href="audits/shoebox-planner-audit.html">View the Audit →</a>
+    </div>
+  </div>
+
+
+  <!-- FINDINGS-STYLE CATEGORY LIST -->
+  <section class="findings-section">
+    <div class="findings-header">
+      <p class="section-label">Four Categories</p>
+    </div>
+
+    <!-- GEOMETRY -->
+    <div class="finding" id="cat-geometry">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">01</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Geometry & Wall Clamping</span>
+          <span class="finding-area">7 Shapes · Cross-Browser · Chromium / WebKit / Firefox</span>
+        </div>
+        <span class="sev-badge sev-medium">3 moments</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <p class="finding-summary">
+            Each of seven shape variants — square, rotated square, rectangle, rotated rectangle, circle, oval, rotated oval — dragged toward every wall, checking the rendered gap against the room border. This category produced three separate moments worth naming on their own, below the code.
+          </p>
+
+          <div class="finding-block">
+            <p class="finding-block-label">Sample Test — Square vs. Wall</p>
+            <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">await dragShapeToWall(square, 'top');
+expect(await getGapFromWall(square, 'top')).toBeCloseTo(2, 0.3);
+
+await dragShapeToWall(square, 'left');
+expect(await getGapFromWall(square, 'left')).toBeCloseTo(2, 0.3);</pre>
+          </div>
+
+          <div class="finding-block">
+            <p class="finding-block-label">Moment 01 — Argued Out, Argued Back In</p>
+            <p style="margin-bottom: 16px;">A rotated square was flagged as needing its own test, separate from rotated rectangle. The counter-argument was that both shared the same rotated-corner bounding-box code, so one test covered both. That's true of the code — and beside the point. A user can rotate a square regardless of what the rectangle test already covers, and whether that stays inside the room is a real, separate, user-facing question. The correct call had already been made before the argument started; it just had to be held rather than talked out of.</p>
+            <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">test('rotated square (40°) clamps to room wall', async ({ page }) => {
+  // ...same wall-drag pattern as plain square, at a
+  // deliberately non-round rotation angle
+});</pre>
+          </div>
+
+          <div class="finding-block">
+            <p class="finding-block-label">Moment 02 — The Ellipse Blind Spot, Again</p>
+            <p style="margin-bottom: 16px;">A rotated oval measured as sitting roughly 20px outside the room wall. It wasn't — visually, it stayed inside the whole time. The test was reading <code>getBoundingClientRect()</code>, which measures the shape's invisible rotated rectangular div, not the visible ellipse rendered inside it. That's the same category of mistake Case Study 01 documents in a different AI assistant, months earlier, on the same feature: treating a rotated, asymmetric shape as if rectangle math would cover it. The fix recomputed the true ellipse bounding box, using the app's own formula, applied independently in the test.</p>
+            <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">const aabbW = 2 * Math.sqrt((rx * cos) ** 2 + (ry * sin) ** 2);
+const aabbH = 2 * Math.sqrt((rx * sin) ** 2 + (ry * cos) ** 2);
+// measuring the true ellipse, not the rectangular div around it</pre>
+          </div>
+
+          <div class="finding-block">
+            <p class="finding-block-label">Moment 03 — Declared Done, Wasn't</p>
+            <p>Seven shapes were planned. Circle — plain, unrotated, equal width and height — was quietly dropped somewhere in the middle of the session and never written. The category got called complete anyway. It wasn't caught by re-reading the code or re-running anything; it was caught by counting the original list against what actually existed, and saying so directly rather than letting a confident "done" stand unchecked.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UI SYNC -->
+    <div class="finding" id="cat-ui-sync">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">02</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Canvas ↔ List Sync</span>
+          <span class="finding-area">Desktop + iPad · RP-002 · RP-007</span>
+        </div>
+        <span class="sev-badge">2 known bugs</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <p class="finding-summary">
+            Clicking furniture should highlight its sidebar entry, and clicking a sidebar entry should highlight the furniture — in both directions, on both desktop and iPad. Two of the four directions are already-documented findings from the self-audit; this automates all four, bugs included, rather than only the parts that pass.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Sample Test — RP-002, Documenting the Known Bug</p>
+            <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">await sidebarEntry.click();
+// RP-002: furniture should NOT get "selected" — documents the known bug
+await expect(shape).not.toHaveClass(/selected/);</pre>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Result</p>
+            <p>Canvas → list highlight confirmed working on both platforms. List → canvas highlight confirmed broken on desktop (RP-002) and confirmed working on iPad. Color-swatch tap confirmed broken on iPad (RP-007) and confirmed working on desktop.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERSISTENCE -->
+    <div class="finding" id="cat-persistence">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">03</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Save & Reload</span>
+          <span class="finding-area">localStorage · RP-004</span>
+        </div>
+        <span class="sev-badge">1 known bug</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <p class="finding-summary">
+            A full save → saved-rooms list → reopen flow, automated end to end, confirming a finding the self-audit already documented: layer order reverses on reload. Scoped to that one numbered finding rather than padded with unrelated checks that don't carry an RP number.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Sample Test — RP-004</p>
+            <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">// RP-004: order should be reversed, not preserved
+expect(namesAfter).toEqual([...namesBefore].reverse());</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESIZE LIMITS -->
+    <div class="finding" id="cat-resize">
+      <button class="finding-trigger" onclick="toggleFinding(this)">
+        <span class="finding-id">04</span>
+        <div class="finding-title-wrap">
+          <span class="finding-title">Resize Limits</span>
+          <span class="finding-area">New Discovery · Not Previously Documented</span>
+        </div>
+        <span class="sev-badge sev-low">New finding</span>
+        <span class="finding-chevron">↓</span>
+      </button>
+      <div class="finding-body">
+        <div class="finding-body-inner">
+          <p class="finding-summary">
+            Font size has an enforced min and max in the code. Furniture width and height do not — this category set out to find out what that actually means in practice, since nobody had tested it before.
+          </p>
+          <div class="finding-block">
+            <p class="finding-block-label">Sample Test — Two Ways to Enter the Same Value</p>
+            <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">// Typing "-20" directly: field shows it, rendered width barely changes
+// Decrementing via the spinner into negative: rendered width hits 0
+expect(finalValue).toBeLessThan(0);
+expect(renderedWidth).toBe(0);</pre>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Result</p>
+            <p>Zero or negative width makes furniture invisible but fully interactive — still clickable and draggable at its exact former position. No upper bound exists on the raw dimension, but the wall-clamping logic from Category 01 still contains it. Typing a negative value directly is silently ignored by the app; reaching the same value through the spinner actually applies it — two different real behaviors from the same typed number.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- METHODOLOGY -->
+  <div class="method-strip">
+    <div class="method-strip-left">
+      <p class="section-label">Methodology</p>
+      <p class="method-pull">"Each case started the same way — an AI gave a confident answer, and it didn't <strong>hold up</strong> once checked."</p>
+    </div>
+    <div class="method-strip-right">
+      <p class="method-body">Building this test suite meant working with AI at every step — deciding what to test, writing the Playwright code, reading what the results actually meant. The three moments inside the geometry category are what came out of paying attention to that process, not just its output. None of them required deep technical knowledge to catch: a rotated shape either needs its own test or it doesn't, a shape either stays inside the room or it doesn't, a planned shape either got tested or it didn't. What mattered was checking the AI's answer against the plain version of the question, instead of accepting a more technical-sounding one in its place.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © <span>2026</span> Hyeji Kim (Alex) — Seoul, Korea
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/kimhj-alex" target="_blank" rel="noopener">GitHub</a>
+      <a href="resume.html">Resume</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    function toggleFinding(btn) {
+      const finding = btn.closest('.finding');
+      const isOpen = finding.classList.contains('open');
+      document.querySelectorAll('.finding.open').forEach(f => f.classList.remove('open'));
+      if (!isOpen) finding.classList.add('open');
+    }
+  </script>
+
+</body>
+</html>

@@ -8,7 +8,7 @@
 
 This is the source repository for my QA portfolio — a collection of real findings from real use, documented in Jira-style bug reports, structured platform audits, and narrative Gen AI case studies.
 
-I'm a junior QA tester based in Seoul, Korea, ISTQB CTFL certified (2026), working toward CT-GenAI next. My background is in design, writing, and building digital tools independently — which means I've spent years noticing the gaps between how things are supposed to work and how they actually do. Over the past year, that same habit turned into hands-on Gen AI evaluation: catching where AI-assisted work sounded right but wasn't, across code, creative writing, and business planning.
+I'm a junior QA tester based in Seoul, Korea, working toward ISTQB CTFL and CT-GenAI. My background is in design, writing, and building digital tools independently — which means I've spent years noticing the gaps between how things are supposed to work and how they actually do. Over the past year, that same habit turned into hands-on Gen AI evaluation: catching where AI-assisted work sounded right but wasn't, across code, creative writing, and business planning.
 
 ---
 

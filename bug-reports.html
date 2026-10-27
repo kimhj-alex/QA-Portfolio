@@ -146,6 +146,16 @@
       flex-wrap: wrap;
     }
 
+    .scale-note {
+      padding: 16px 48px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--grey);
+    }
+
+    .scale-note strong { color: var(--black); font-weight: 500; }
+
     .filter-label {
       font-family: var(--mono);
       font-size: 10px;
@@ -348,6 +358,7 @@
       nav { padding: 0 24px; }
       .page-header { grid-template-columns: 1fr; padding: 48px 24px 40px; gap: 24px; }
       .filter-bar { padding: 16px 24px; }
+      .scale-note { padding: 14px 24px; }
       .bug-list-header { display: none; }
       .bug-row { grid-template-columns: 56px 1fr auto 32px; padding: 18px 24px; gap: 12px; }
       .bug-platform { display: none; }
@@ -403,7 +414,7 @@
       <div class="stat-label">Total Findings</div>
     </div>
     <div class="stat-cell">
-      <div class="stat-number">2</div>
+      <div class="stat-number">3</div>
       <div class="stat-label">High Severity</div>
     </div>
     <div class="stat-cell">
@@ -414,6 +425,11 @@
       <div class="stat-number">2</div>
       <div class="stat-label">Device Types</div>
     </div>
+  </div>
+
+  <!-- SCALE DEFINITIONS -->
+  <div class="scale-note">
+    <p><strong>Severity</strong> — how much harm the bug does to the user when it occurs. <strong>Priority</strong> — how soon it should be fixed, weighing reach, workarounds, and cost of the fix.</p>
   </div>
 
   <!-- FILTER BAR -->
@@ -451,13 +467,13 @@
       <span class="bug-arrow">→</span>
     </a>
 
-    <a href="bug-reports/tiktok-follow.html" class="bug-row" data-sev="medium" data-platform="mobile">
+    <a href="bug-reports/tiktok-follow.html" class="bug-row" data-sev="high" data-platform="mobile">
       <span class="bug-index">BR-002</span>
       <div class="bug-title">Silent Follow Restriction on New Accounts
         <span>TikTok</span>
       </div>
       <span class="bug-platform">Mobile · iOS</span>
-      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-high">High</span>
       <span class="sev-badge sev-medium">Medium</span>
       <span class="bug-arrow">→</span>
     </a>
@@ -467,9 +483,9 @@
       <div class="bug-title">Account Delegation Feature Absent from Mobile App
         <span>Gmail</span>
       </div>
-      <span class="bug-platform">Mobile · Web</span>
+      <span class="bug-platform">Mobile · iOS</span>
       <span class="sev-badge sev-medium">Medium</span>
-      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-low">Low</span>
       <span class="bug-arrow">→</span>
     </a>
 
@@ -480,7 +496,7 @@
       </div>
       <span class="bug-platform">Web</span>
       <span class="sev-badge sev-low">Low</span>
-      <span class="sev-badge sev-low">Low</span>
+      <span class="sev-badge sev-medium">Medium</span>
       <span class="bug-arrow">→</span>
     </a>
 
@@ -491,7 +507,7 @@
       </div>
       <span class="bug-platform">Web</span>
       <span class="sev-badge sev-low">Low</span>
-      <span class="sev-badge sev-low">Low</span>
+      <span class="sev-badge sev-medium">Medium</span>
       <span class="bug-arrow">→</span>
     </a>
 
@@ -502,7 +518,7 @@
       </div>
       <span class="bug-platform">Web</span>
       <span class="sev-badge sev-medium">Medium</span>
-      <span class="sev-badge sev-medium">Medium</span>
+      <span class="sev-badge sev-low">Low</span>
       <span class="bug-arrow">→</span>
     </a>
 
@@ -513,17 +529,17 @@
       </div>
       <span class="bug-platform">Web</span>
       <span class="sev-badge sev-high">High</span>
-      <span class="sev-badge sev-high">High</span>
+      <span class="sev-badge sev-medium">Medium</span>
       <span class="bug-arrow">→</span>
     </a>
 
-    <a href="bug-reports/google-calendar.html" class="bug-row" data-sev="low" data-platform="web">
+    <a href="bug-reports/google-calendar.html" class="bug-row" data-sev="medium" data-platform="web">
       <span class="bug-index">BR-008</span>
       <div class="bug-title">No Date Jump Navigation + Mobile Search Hard Cutoff
         <span>Google Calendar</span>
       </div>
       <span class="bug-platform">Web · Mobile</span>
-      <span class="sev-badge sev-low">Low</span>
+      <span class="sev-badge sev-medium">Medium</span>
       <span class="sev-badge sev-low">Low</span>
       <span class="bug-arrow">→</span>
     </a>

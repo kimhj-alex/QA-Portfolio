@@ -460,7 +460,7 @@
         <p class="page-subtitle">Silent Follow Restriction on New Accounts with False UI Feedback</p>
       </div>
       <div class="page-header-meta">
-        <span class="tag accent">Medium Severity</span>
+        <span class="tag accent">High Severity</span>
         <span class="tag">Mobile · iOS</span>
         <span class="tag">False Feedback</span>
         <span class="tag">Undisclosed Restriction</span>
@@ -475,7 +475,7 @@
         </tr>
         <tr>
           <td>Severity</td>
-          <td><span class="sev-badge sev-medium">Medium</span></td>
+          <td><span class="sev-badge sev-high">High</span></td>
         </tr>
         <tr>
           <td>Priority</td>
@@ -556,8 +556,16 @@
       <div class="sidebar-meta-block">
         <p class="section-label">Severity Rationale</p>
         <div class="highlight-box">
+          <p class="highlight-box-label">Why High</p>
+          <p>The app shows <strong>&ldquo;Following&rdquo; for a follow that never happened</strong>. False success feedback on a core action is a correctness failure, not just a communication gap &mdash; and with <strong>no notice of the restriction</strong>, users have no way to understand what is happening or when it will resolve.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Priority Rationale</p>
+        <div class="highlight-box">
           <p class="highlight-box-label">Why Medium</p>
-          <p>The restriction itself is a deliberate platform decision. The issue is the <strong>false UI feedback</strong> and <strong>complete absence of communication</strong> — two separate failures that together leave users with no way to understand what is happening or when it will resolve. Core functionality is inaccessible with no explanation.</p>
+          <p>Only <strong>new accounts</strong> hit the restriction, and it lifts on its own after a period of time. The false &ldquo;Following&rdquo; state should be fixed, but the limited reach and temporary nature keep it out of the urgent queue.</p>
         </div>
       </div>
 

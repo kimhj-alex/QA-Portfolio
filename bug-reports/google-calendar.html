@@ -464,7 +464,7 @@
         <p class="page-subtitle">No Date Jump Navigation on Desktop; Mobile Search Limited to Two-Year Window</p>
       </div>
       <div class="page-header-meta">
-        <span class="tag accent">Low Severity</span>
+        <span class="tag accent">Medium Severity</span>
         <span class="tag">Web · Mobile</span>
         <span class="tag">Navigation</span>
         <span class="tag">Feature Parity</span>
@@ -479,7 +479,7 @@
         </tr>
         <tr>
           <td>Severity</td>
-          <td><span class="sev-badge sev-low">Low</span></td>
+          <td><span class="sev-badge sev-medium">Medium</span></td>
         </tr>
         <tr>
           <td>Priority</td>
@@ -586,8 +586,16 @@
       <div class="sidebar-meta-block">
         <p class="section-label">Severity Rationale</p>
         <div class="highlight-box">
+          <p class="highlight-box-label">Why Medium</p>
+          <p>This report covers two issues. The missing date jump is a <strong>navigation inconvenience</strong> (Low on its own) &mdash; Calendar is mainly forward-looking and most users rarely go far back. The mobile search cutoff is more serious (Medium on its own): it&rsquo;s a genuine <strong>data accessibility issue</strong> for users who rely on their calendar as a historical record. The report takes the higher of the two.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-meta-block">
+        <p class="section-label">Priority Rationale</p>
+        <div class="highlight-box">
           <p class="highlight-box-label">Why Low</p>
-          <p>Google Calendar is primarily a forward-looking scheduling tool and most users rarely need to navigate far into the past. However, the mobile search cutoff crosses from inconvenience into a genuine <strong>data accessibility issue</strong> for users who rely on their calendar as a historical record of appointments.</p>
+          <p>Neither issue blocks scheduling, and desktop search still reaches older events. Taken separately: date jump Low / Low, mobile search cutoff Medium / Low.</p>
         </div>
       </div>
 

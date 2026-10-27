@@ -441,7 +441,6 @@
     <button class="filter-btn" onclick="filterReports('low', this)">Low</button>
     <button class="filter-btn" onclick="filterReports('mobile', this)">Mobile</button>
     <button class="filter-btn" onclick="filterReports('web', this)">Web</button>
-    <button class="filter-btn" onclick="filterReports('cross-browser', this)">Cross-Browser</button>
   </div>
 
   <!-- BUG LIST -->
@@ -533,7 +532,7 @@
       <span class="bug-arrow">→</span>
     </a>
 
-    <a href="bug-reports/google-calendar.html" class="bug-row" data-sev="medium" data-platform="web">
+    <a href="bug-reports/google-calendar.html" class="bug-row" data-sev="medium" data-platform="web mobile">
       <span class="bug-index">BR-008</span>
       <div class="bug-title">No Date Jump Navigation + Mobile Search Hard Cutoff
         <span>Google Calendar</span>
@@ -574,7 +573,7 @@
         } else if (type === 'high' || type === 'medium' || type === 'low') {
           row.classList.toggle('hidden', sev !== type);
         } else {
-          row.classList.toggle('hidden', platform !== type);
+          row.classList.toggle('hidden', !platform.split(' ').includes(type));
         }
       });
     }

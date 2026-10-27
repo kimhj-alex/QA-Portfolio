@@ -682,7 +682,7 @@
             <span class="tag">macOS · Brave · github.com</span>
           </div>
           <p class="finding-summary">
-            Users cannot create folders through any visible UI control. The only method requires typing a slash character inside a filename field — a convention with no tooltip, label, or hint anywhere in the interface. Discovered only after consulting an external tool (ChatGPT). New or non-technical users have no way to discover this without leaving the platform entirely.
+            Users cannot create folders through any visible UI control. The only way to create a folder from the file editor is typing a slash character inside a filename field — a convention with no tooltip, label, or hint anywhere in the interface. Discovered only after consulting an external tool (ChatGPT). New or non-technical users have no way to discover this without leaving the platform entirely.
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>
@@ -700,12 +700,12 @@
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
-            <p>No folder creation UI exists. The only method — typing a slash in the filename field — is entirely undisclosed in the interface. Users who don't already know this cannot proceed without external help.</p>
+            <p>No folder creation UI exists. The only method — typing a slash in the filename field — is not shown anywhere in the editor. Users who don't already know this cannot proceed without external help.</p>
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Rationale</p>
             <p><strong>Severity &mdash; Low.</strong> Nothing is broken: folders can be created by typing a slash in the filename field. The failure is that the method is undiscoverable from the interface.</p>
-            <p><strong>Priority &mdash; Medium.</strong> Anyone who doesn&rsquo;t already know the slash convention hits this the first time they try to organize files, and a placeholder hint or tooltip is a small fix.</p>
+            <p><strong>Priority &mdash; Medium.</strong> Anyone who doesn&rsquo;t already know the slash convention hits this the first time they try to organize files, and a placeholder hint or tooltip would address it.</p>
           </div>
         </div>
       </div>
@@ -731,7 +731,7 @@
             <span class="tag">macOS · Safari · github.com</span>
           </div>
           <p class="finding-summary">
-            GitHub Pages provides no real-time deployment status updates, no propagation delay warnings, and no indication that rapid consecutive commits will cancel in-progress deployments. When a user uploads a replacement file and the live site does not update immediately, there is no guidance on whether to wait, refresh, or take action. This causes users to troubleshoot a problem that doesn't exist — triggering more commits that cancel previous deployments and extend the delay further. Even after all checks pass, propagation to the live site is inconsistent across devices and can take 6+ minutes on mobile with no user-facing explanation.
+            GitHub Pages provides no real-time deployment status updates, no propagation delay warnings, and no indication that rapid consecutive commits will cancel in-progress deployments. When a user uploads a replacement file and the live site does not update immediately, there is no guidance on whether to wait, refresh, or take action. This causes users to troubleshoot a problem that doesn't exist — triggering more commits that cancel previous deployments and extend the delay further. Even after all checks pass, the live site had not updated on my phone after 6+ minutes, with no user-facing explanation.
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>

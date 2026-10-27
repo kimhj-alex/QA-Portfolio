@@ -626,13 +626,13 @@
     <div class="context-left">
       <p class="section-label">About the App</p>
       <p class="context-body">
-        Shoebox Planner is a drag-and-drop 2D room planning tool built from scratch as a PWA — designed for desktop and tablet use. Users can create rooms, place and customize furniture items, adjust sizes and colors, manage layers, and save or export their layouts. This audit was conducted by the developer as an objective self-assessment of the current beta release across desktop and iPad environments.
+        Shoebox Planner is a drag-and-drop 2D room planning tool built from scratch as a PWA — designed for desktop and tablet use. Users can create rooms, place and customize furniture items, adjust sizes and colors, manage layers, and save or export their layouts. This audit was conducted by the developer as a self-assessment of the current beta release across desktop and iPad environments.
       </p>
     </div>
     <div class="context-right">
       <p class="section-label">Testing Approach</p>
       <p class="context-body">
-        Testing followed a structured checklist covering all core features, executed first on desktop then repeated on iPad to identify platform-specific regressions. Features that passed on both platforms were marked complete. Bugs were documented where behavior deviated from expected. Where a desktop bug could not be reproduced on iPad due to other blocking bugs, it was noted as untestable rather than passed.
+        Testing followed a structured checklist covering all core features, executed first on desktop then repeated on iPad to identify platform-specific bugs. Features that passed on both platforms were marked complete. Bugs were documented where behavior deviated from expected. Where a desktop bug could not be reproduced on iPad due to other blocking bugs, it was noted as untestable rather than passed.
       </p>
     </div>
   </div>
@@ -782,7 +782,7 @@
             <span class="tag">Desktop only</span>
           </div>
           <p class="finding-summary">
-            On desktop, clicking a furniture item in the room correctly highlights the corresponding layer in the left panel. The reverse is not true — clicking a layer in the panel does not highlight or select the corresponding furniture item in the room canvas. This breaks the expected bidirectional relationship between the layer list and the canvas, making it harder to identify which furniture item corresponds to a given layer when the room is complex. Note: this works correctly on iPad, making it a desktop-specific regression.
+            On desktop, clicking a furniture item in the room correctly highlights the corresponding layer in the left panel. The reverse is not true — clicking a layer in the panel does not highlight or select the corresponding furniture item in the room canvas. This breaks the expected bidirectional relationship between the layer list and the canvas, making it harder to identify which furniture item corresponds to a given layer when the room is complex. Note: this works correctly on iPad, making it a desktop-only bug.
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>
@@ -870,7 +870,7 @@
             <span class="tag">Not testable on iPad — layer reorder blocked by RP-005</span>
           </div>
           <p class="finding-summary">
-            When a room is saved and reopened, the layer order of furniture items is not preserved. Items appear in a default order rather than the custom order the user had arranged. Hidden layer state is saved and restored correctly — only the order is lost. This means any deliberate layering decisions made by the user are discarded on save, requiring them to manually re-arrange layers every time a saved room is opened. Not testable on iPad as layer reordering itself is broken on touch (see RP-005).
+            When a room is saved and reopened, the layer order of furniture items is not preserved. Items appear in reversed order rather than the custom order the user had arranged. Hidden layer state is saved and restored correctly — only the order is lost. This means any deliberate layering decisions made by the user are discarded on save, requiring them to manually re-arrange layers every time a saved room is opened. Not testable on iPad as layer reordering itself is broken on touch (see RP-005).
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>
@@ -888,7 +888,7 @@
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
-            <p>Layer order is not saved. Furniture items reappear in default order. Hidden layer state is preserved correctly, confirming the save mechanism is partially working but not capturing layer position data.</p>
+            <p>Layer order is not saved. Furniture items reappear in reversed order. Hidden layer state is preserved correctly, suggesting the save mechanism is partially working but not capturing layer position data.</p>
           </div>
         </div>
       </div>

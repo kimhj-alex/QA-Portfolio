@@ -643,7 +643,7 @@
       <div class="report-block">
         <p class="section-label">Summary</p>
         <p class="report-summary">
-          When setting up a boosted post through the Instagram iOS app, the Apple service fee — a significant additional charge on top of the advertised ad budget — is not disclosed as a concrete amount at any point during the setup flow. The fee appears as "To be calculated" on the Budget & duration screen and is absent entirely from the Review screen. The full total including fees is only revealed at the final Payment step, where an ad budget of ₩73,388 becomes a total charge of ₩106,092 — an increase of approximately 45%. That gap comes from the Apple service fee (₩28,934) and estimated taxes (₩9,645) applied on top of the remaining funds needed to cover the budget. By contrast, the desktop version of the same ad setup shows zero additional fees and explicitly informs the user they are avoiding the Apple service fee by boosting on the web. The mobile flow withholds the true cost until the final step and does not prompt users to consider completing the flow on desktop where the fee does not apply.
+          When setting up a boosted post through the Instagram iOS app, the Apple service fee — a significant additional charge on top of the advertised ad budget — is not disclosed as a concrete amount at any point during the setup flow. The fee appears as "To be calculated" on the Budget & duration screen and is absent entirely from the Review screen. The full total including fees is only revealed at the final Payment step, where the total charge is ₩106,092: ₩38,579 in fees and taxes on ₩67,513 of new funds, about 57% more. That gap comes from the Apple service fee (₩28,934) and estimated taxes (₩9,645) applied on top of the remaining funds needed to cover the budget. By contrast, the desktop version of the same ad setup shows zero additional fees and explicitly informs the user they are avoiding the Apple service fee by boosting on the web. The mobile flow withholds the true cost until the final step and does not prompt users to consider completing the flow on desktop where the fee does not apply.
         </p>
       </div>
 
@@ -668,7 +668,7 @@
 
       <div class="report-block">
         <p class="report-block-label">Actual Result</p>
-        <p>The Apple service fee is shown only as "To be calculated" throughout the mobile setup flow and does not appear as a concrete amount until the final Payment screen. The desktop alternative — which carries no additional fees — is not surfaced during the mobile flow. Users who complete the process on mobile without prior knowledge of the fee structure are presented with a total approximately 45% higher than the ad budget they selected, only at the point of payment.</p>
+        <p>The Apple service fee is shown only as "To be calculated" throughout the mobile setup flow and does not appear as a concrete amount until the final Payment screen. The desktop alternative — which carries no additional fees — is not surfaced during the mobile flow. Users who complete the process on mobile without prior knowledge of the fee structure are presented, only at the point of payment, with ₩38,579 in fees and taxes on ₩67,513 of new funds, about 57% more.</p>
       </div>
 
     </div>
@@ -680,7 +680,7 @@
         <p class="section-label">Severity Rationale</p>
         <div class="highlight-box">
           <p class="highlight-box-label">Why High</p>
-          <p>A nearly <strong>45% cost increase</strong> disclosed only at the final payment step constitutes a significant pricing transparency failure. Users who set a budget expecting to pay ₩73,388 are presented with a ₩106,092 charge with no prior warning. The desktop flow avoids this entirely — meaning the issue is platform-specific and correctable.</p>
+          <p><strong>₩38,579 in fees and taxes on ₩67,513 of new funds, about 57% more</strong>, disclosed only at the final payment step, constitutes a significant pricing transparency failure. Users who set a budget expecting to pay ₩73,388 are presented with a ₩106,092 charge with no amount shown before the Payment step. The desktop flow avoids this entirely — meaning the issue is platform-specific and correctable.</p>
         </div>
       </div>
 
@@ -688,7 +688,7 @@
         <p class="section-label">Priority Rationale</p>
         <div class="highlight-box">
           <p class="highlight-box-label">Why High</p>
-          <p>Money is involved and the gap appeared in the <strong>iOS boost flow tested</strong>. The desktop flow already shows the full cost upfront, so the fix is cheap: surface the same breakdown earlier in the mobile flow.</p>
+          <p>Money is involved and the gap appeared in the <strong>iOS boost flow tested</strong>. The desktop flow already shows the full cost upfront, so the fix has a clear model: surface the same breakdown earlier in the mobile flow.</p>
         </div>
       </div>
 
@@ -696,7 +696,7 @@
         <p class="section-label">Key Discrepancy</p>
         <div class="highlight-box">
           <p class="highlight-box-label">Mobile vs Desktop</p>
-          <p><strong>Mobile (iOS app)</strong><br>Ad budget: ₩73,388<br>Apple service fee: ₩28,934<br>Estimated taxes: ₩9,645<br>Total: ₩106,092</p>
+          <p><strong>Mobile (iOS app)</strong><br>Ad budget: ₩73,388<br>Funds already available: −₩5,875<br>Funds to add: ₩67,513<br>Apple service fee: ₩28,934<br>Estimated taxes: ₩9,645<br>Total charged: ₩106,092</p>
         </div>
         <div class="highlight-box">
           <p class="highlight-box-label">Desktop (instagram.com)</p>

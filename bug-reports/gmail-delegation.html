@@ -500,7 +500,7 @@
       <div class="report-block">
         <p class="section-label">Summary</p>
         <p class="report-summary">
-          Gmail's account delegation feature — which allows an account owner to grant another person access to their inbox — is entirely absent from the Gmail mobile app. The setting does not appear anywhere in the app's account settings, and no message, tooltip, or prompt indicates that the feature exists or that it must be configured on desktop. Google's official support documentation discloses that initial delegation setup requires a computer, but does not communicate this limitation within the app itself. Once delegation is set up on desktop, the delegated account is also inaccessible from the Gmail mobile app — access is only possible by opening gmail.com in a mobile browser and requesting the desktop site, a workaround with no in-app guidance. The feature gap is particularly disruptive for administrative users who rely on delegation for inbox management and expect a consistent experience across devices.
+          Gmail's account delegation feature — which allows an account owner to grant another person access to their inbox — is entirely absent from the Gmail mobile app. The setting does not appear anywhere in the app's account settings, and no message, tooltip, or prompt indicates that the feature exists or that it must be configured on desktop. Google's official support documentation discloses that initial delegation setup requires a computer, but does not communicate this limitation within the app itself. As of November 2025, the delegated account was also inaccessible from the Gmail mobile app — access was only possible by opening gmail.com in a mobile browser and requesting the desktop site, a workaround with no in-app guidance. Google&rsquo;s Gmail help now describes opening a delegated inbox in the iPhone &amp; iPad app (tap your profile picture, then the account marked &ldquo;Delegated&rdquo;); this has not been retested. The same help page confirms that delegates can&rsquo;t be added from the Gmail app.
         </p>
       </div>
 
@@ -537,7 +537,7 @@
         <p class="section-label">Severity Rationale</p>
         <div class="highlight-box">
           <p class="highlight-box-label">Why Medium</p>
-          <p>Delegation is a feature primarily used by administrative and professional users managing shared inboxes. Its complete absence from mobile — with no guidance — forces users onto desktop for a workflow that should be device-agnostic. The issue is a <strong>feature parity and discoverability failure</strong>, not a functional break of existing functionality.</p>
+          <p>Delegation can&rsquo;t be set up from the mobile app, and the app gives no guidance that it must be done on a computer — forcing users onto desktop for a workflow that should be device-agnostic. The issue is a <strong>feature parity and discoverability failure</strong>, not a functional break of existing functionality.</p>
         </div>
       </div>
 
@@ -545,7 +545,7 @@
         <p class="section-label">Priority Rationale</p>
         <div class="highlight-box">
           <p class="highlight-box-label">Why Low</p>
-          <p>A workaround exists (set up delegation on desktop, then open Gmail in a browser), and Google has <strong>reportedly begun rolling out mobile delegation</strong>, though availability is limited and unconfirmed. Adding in-app guidance in the meantime is helpful but not urgent.</p>
+          <p>Setup has a workaround (use a computer), and Google&rsquo;s help now describes <strong>opening delegated inboxes in the iPhone app</strong>, though this hasn&rsquo;t been retested. Adding in-app guidance in the meantime is helpful but not urgent.</p>
         </div>
       </div>
 
@@ -560,8 +560,8 @@
       <div class="sidebar-meta-block">
         <p class="section-label">Status Note</p>
         <div class="highlight-box">
-          <p class="highlight-box-label">Partial Rollout</p>
-          <p>As of 2026, Google has reportedly begun rolling out mobile delegation support, but availability is limited and unconfirmed. The finding reflects the experience as of November 2025, when no mobile access existed. In-app communication of this limitation remains absent regardless of rollout status.</p>
+          <p class="highlight-box-label">Update</p>
+          <p>Google&rsquo;s Gmail help (iPhone &amp; iPad) now describes opening a delegated inbox in the app, but still says delegates can&rsquo;t be added from the Gmail app. The finding reflects the experience as of November 2025, when no mobile access existed; mobile access has not been retested since. In-app communication of this limitation remains absent regardless of rollout status.</p>
         </div>
       </div>
 

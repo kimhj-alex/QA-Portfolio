@@ -521,7 +521,7 @@
       <div class="report-block">
         <p class="section-label">Summary</p>
         <p class="report-summary">
-          Google Calendar lacks a direct date jump feature on both desktop and mobile. On desktop, navigating to a specific past or future date requires switching to Year view and clicking through months manually — a multi-step workaround with no date input field or dropdown anywhere in the interface. On mobile, Year view is not available at all, making manual date navigation even more tedious. The mobile search function compounds this issue by enforcing a hard two-year search window: results display only entries after a date approximately two years prior to the current date, with a notice at the top reading "Only entries after [date] are shown here." Past events outside this window — such as medical appointments from 2022 — are completely inaccessible from the mobile app and can only be retrieved by switching to desktop. No option to extend the search range is provided on mobile.
+          Google Calendar has no visible date jump control on desktop or mobile. On desktop, the only date jump is a keyboard shortcut (g, listed in Google&rsquo;s shortcut help) with no visible control or hint in the interface; otherwise, navigating to a specific past or future date requires switching to Year view and clicking through months manually. On mobile, Year view is not available at all, making manual date navigation even more tedious. The mobile search function compounds this issue by enforcing a hard two-year search window: results display only entries after a date approximately two years prior to the current date, with a notice at the top reading "Only entries after [date] are shown here." Past events outside this window — such as medical appointments from 2022 — can&rsquo;t be found through mobile search and can only be searched for on desktop. No option to extend the search range is provided on mobile.
         </p>
       </div>
 
@@ -529,7 +529,7 @@
         <p class="report-block-label">Steps to Reproduce — Desktop Navigation</p>
         <ol class="steps-list">
           <li><span class="step-num">1.</span><span>Open calendar.google.com and attempt to navigate to a specific date in the distant past or future</span></li>
-          <li><span class="step-num">2.</span><span>Observe: no date input field, jump-to-date dropdown, or search-by-date option exists</span></li>
+          <li><span class="step-num">2.</span><span>Observe: no visible date input field, jump-to-date dropdown, or search-by-date option exists</span></li>
           <li><span class="step-num">3.</span><span>Switch to Year view — click the left arrow repeatedly to navigate to the target year</span></li>
           <li><span class="step-num">4.</span><span>Scroll to the target month and click the target date</span></li>
           <li><span class="step-num">5.</span><span>Observe: Day view for the selected date loads after a brief loading state</span></li>
@@ -555,7 +555,7 @@
 
       <div class="report-block">
         <p class="report-block-label">Actual Result</p>
-        <p>No date jump input exists on desktop or mobile. The only navigation method is manual arrow clicking, with Year view as the fastest available workaround on desktop only. Mobile search silently limits results to approximately the past two years with no option to extend the range, making historical events inaccessible from the mobile app entirely.</p>
+        <p>No visible date jump control exists on desktop or mobile. On desktop, the g keyboard shortcut is the only direct jump and is not surfaced in the interface; otherwise navigation is manual arrow clicking, with Year view as the fastest visible option on desktop only. Mobile search silently limits results to approximately the past two years with no option to extend the range, making historical events inaccessible from the mobile app entirely.</p>
       </div>
 
     </div>
@@ -579,7 +579,7 @@
         </div>
         <div class="highlight-box">
           <p class="highlight-box-label">2 — Mobile Search Hard Cutoff</p>
-          <p>Mobile search enforces a <strong>~2 year window</strong> with no way to extend it. Events outside this range — medical records, past appointments, historical entries — are completely inaccessible from mobile.</p>
+          <p>Mobile search enforces a <strong>~2 year window</strong> with no way to extend it. Events outside this range — medical records, past appointments, historical entries — can&rsquo;t be found through mobile search.</p>
         </div>
       </div>
 
@@ -587,7 +587,7 @@
         <p class="section-label">Severity Rationale</p>
         <div class="highlight-box">
           <p class="highlight-box-label">Why Medium</p>
-          <p>This report covers two issues. The missing date jump is a <strong>navigation inconvenience</strong> (Low on its own). The mobile search cutoff is more serious (Medium on its own) because it&rsquo;s a genuine <strong>data accessibility issue</strong>: past events outside the search window can&rsquo;t be retrieved on mobile at all. The report takes the higher of the two.</p>
+          <p>This report covers two issues. The missing date jump is a <strong>navigation inconvenience</strong> (Low on its own). The mobile search cutoff is more serious (Medium on its own) because it&rsquo;s a genuine <strong>data accessibility issue</strong>: past events outside the search window can&rsquo;t be found through mobile search. The report takes the higher of the two.</p>
         </div>
       </div>
 

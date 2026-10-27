@@ -908,7 +908,7 @@
             <span class="tag">iPhone vs. iPad · Gemini app</span>
           </div>
           <p class="finding-summary">
-            On iOS, the app's main chat list displayed "No saved chats — Recent chats will appear here so you can continue them later," despite an extensive chat history existing on the account. The chats were not actually missing: searching for them within the same app surfaced the full history correctly, each with accurate creation dates, and opening a chat from search results worked normally. Force-quitting and relaunching the app was attempted multiple times and did not resolve the issue. The main list only began displaying chats correctly again after switching to a different account and back. The same account had been used earlier that same day on a second device (iPad) at a cafe, where the full chat history displayed correctly in the main list. The iPhone issue was first noticed later that day, on a train, indicating the failure was specific to this device and this app instance rather than a server-side or account-wide data problem.
+            On iOS, the app's main chat list displayed "No saved chats — Recent chats will appear here so you can continue them later," despite an extensive chat history existing on the account. The chats were not actually missing: searching for them within the same app surfaced the full history correctly, each with accurate creation dates, and opening a chat from search results worked normally. Force-quitting and relaunching the app was attempted multiple times and did not resolve the issue. The main list only began displaying chats correctly again after switching to a different account and back. The same account had been used earlier that same day on a second device (iPad) at a cafe, where the full chat history displayed correctly in the main list. The iPhone issue was first noticed later that day, on a train, suggesting the failure was specific to this device and this app instance rather than a server-side or account-wide data problem.
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>
@@ -931,7 +931,7 @@
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
-            <p>The main list and search operated on inconsistent views of the same underlying data — one showed nothing, the other showed everything correctly. Relaunching the app, tried multiple times, did not resolve the discrepancy. Only a full account switch forced the list to repopulate, and a second device on the same account was unaffected earlier the same day, indicating this was a local, device-specific fault rather than missing or corrupted account data.</p>
+            <p>The main list and search operated on inconsistent views of the same underlying data — one showed nothing, the other showed everything correctly. Relaunching the app, tried multiple times, did not resolve the discrepancy. Only a full account switch forced the list to repopulate, and a second device on the same account was unaffected earlier the same day, suggesting this was a local, device-specific fault rather than missing or corrupted account data.</p>
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Rationale</p>

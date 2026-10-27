@@ -576,7 +576,7 @@
         <p class="page-subtitle">Self-Audit · v1.0-beta</p>
       </div>
       <div class="page-header-meta">
-        <span class="tag accent">7 Findings</span>
+        <span class="tag accent">6 Findings</span>
         <span class="tag">Self-Developed</span>
         <span class="tag">Desktop · iPad</span>
         <span class="tag">PWA</span>
@@ -615,7 +615,7 @@
         </tr>
         <tr>
           <td>Total Findings</td>
-          <td>7 bugs · 1 improvement note</td>
+          <td>6 bugs · 1 improvement note</td>
         </tr>
       </table>
     </div>
@@ -673,13 +673,6 @@
           <td>Clicking a layer does not highlight corresponding furniture in room</td>
           <td><span class="platform-badge">Desktop</span></td>
           <td><span class="sev-badge sev-low">Low</span></td>
-          <td><span class="status-badge">Found Apr 2026</span></td>
-        </tr>
-        <tr>
-          <td>RP-003</td>
-          <td>Multi-step undo bleeds into wrong furniture — position and color changes affect unrelated items</td>
-          <td><span class="platform-badge">Desktop</span></td>
-          <td><span class="sev-badge sev-high">High</span></td>
           <td><span class="status-badge">Found Apr 2026</span></td>
         </tr>
         <tr>
@@ -800,51 +793,6 @@
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
             <p>Clicking a layer in the panel has no effect on the canvas selection. The interaction is one-directional only on desktop. Works correctly on iPad.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RP-003 -->
-    <div class="finding" id="rp-003">
-      <button class="finding-trigger" onclick="toggleFinding(this)">
-        <span class="finding-id">RP-003</span>
-        <div class="finding-title-wrap">
-          <span class="finding-title">Multi-step undo bleeds into wrong furniture — position and color changes affect unrelated items</span>
-          <span class="finding-area">Undo/Redo · Desktop only</span>
-        </div>
-        <span class="sev-badge sev-high">High</span>
-        <span class="finding-chevron">↓</span>
-      </button>
-      <div class="finding-body">
-        <div class="finding-body-inner">
-          <div class="finding-meta-row">
-            <span class="sev-badge sev-high">Severity: High</span>
-            <span class="status-badge">Found Apr 2026</span>
-            <span class="tag">Desktop only</span>
-            <span class="tag">Not testable on iPad — color controls blocked by RP-007</span>
-          </div>
-          <p class="finding-summary">
-            When a user moves one furniture item and then changes the color of a different furniture item, pressing undo multiple times causes incorrect behavior — the undo stack applies changes to the wrong furniture item. On the second undo press, either the first item moves unexpectedly or the second item's color changes instead of reverting the intended action. The undo history appears to mix state between different furniture items rather than tracking each item's history independently.
-          </p>
-          <div class="finding-block">
-            <p class="finding-block-label">Steps to Reproduce</p>
-            <ol class="steps-list">
-              <li><span class="step-num">1.</span><span>Create a room with at least two furniture items</span></li>
-              <li><span class="step-num">2.</span><span>Move Item A to a new position</span></li>
-              <li><span class="step-num">3.</span><span>Change the color of Item B</span></li>
-              <li><span class="step-num">4.</span><span>Press Undo once — observe Item B's color reverts (correct)</span></li>
-              <li><span class="step-num">5.</span><span>Press Undo again</span></li>
-              <li><span class="step-num">6.</span><span>Observe: Item A moves unexpectedly, or Item B's color changes again instead of Item A reverting to its original position</span></li>
-            </ol>
-          </div>
-          <div class="finding-block">
-            <p class="finding-block-label">Expected Result</p>
-            <p>Each undo press reverts the most recent action in the correct sequence — second undo moves Item A back to its original position, regardless of which item was acted on most recently.</p>
-          </div>
-          <div class="finding-block">
-            <p class="finding-block-label">Actual Result</p>
-            <p>The undo stack does not correctly isolate actions by item — multi-step undo bleeds between furniture items, applying position or color changes to the wrong item. Not testable on iPad as color controls are non-functional (see RP-007).</p>
           </div>
         </div>
       </div>

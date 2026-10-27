@@ -730,14 +730,14 @@ expect(namesAfter).toEqual([...namesBefore].reverse());</pre>
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Sample Test — Two Ways to Enter the Same Value</p>
-            <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">// Typing "-20" directly: field shows it, rendered width barely changes
+            <pre style="background:#111110; color:#e8e0d8; padding:20px 24px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; border-radius:4px;">// Typing "-20" directly: the furniture item disappears
 // Decrementing via the spinner into negative: rendered width hits 0
 expect(finalValue).toBeLessThan(0);
 expect(renderedWidth).toBe(0);</pre>
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Result</p>
-            <p>Zero or negative width makes furniture invisible but fully interactive — still clickable and draggable at its exact former position. No upper bound exists on the raw dimension, but the wall-clamping logic from Category 01 still contains it. Typing a negative value directly is silently ignored by the app; reaching the same value through the spinner actually applies it — two different real behaviors from the same typed number.</p>
+            <p>Zero or negative width makes furniture invisible but fully interactive — still clickable and draggable at its exact former position. No upper bound exists on the raw dimension, but the wall-clamping logic from Category 01 still contains it. Typing a negative value directly also makes the furniture item disappear, as does stepping below zero with the spinner.</p>
           </div>
         </div>
       </div>

@@ -788,16 +788,16 @@
             <span class="tag">macOS · Brave · github.com</span>
           </div>
           <p class="finding-summary">
-            The delete button for repository files is not accessible when using the Brave browser. The button either does not appear or cannot be interacted with. GitHub provides no disclosure of browser compatibility limitations, no workaround instructions, and no fallback. Users on Brave cannot delete files through the standard UI. Safari renders the button correctly, suggesting the issue is specific to Brave's script-blocking or rendering behavior rather than a macOS-level problem.
+            The delete button for repository files did not appear when using the Brave browser. Brave Shields were on at the time; whether they played any part was not established. GitHub provided no disclosure of browser compatibility limitations, no workaround instructions, and no fallback, so files could not be deleted through the standard UI on Brave. Safari showed the button and it worked normally.
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>
             <ol class="steps-list">
-              <li><span class="step-num">1.</span><span>Open github.com in Brave browser on macOS</span></li>
+              <li><span class="step-num">1.</span><span>Open github.com in Brave browser on macOS (Brave Shields on)</span></li>
               <li><span class="step-num">2.</span><span>Navigate to a repository and open any file</span></li>
               <li><span class="step-num">3.</span><span>Attempt to locate and interact with the delete (trash) icon</span></li>
-              <li><span class="step-num">4.</span><span>Observe: button is missing or non-functional</span></li>
-              <li><span class="step-num">5.</span><span>Repeat in Safari — button functions normally</span></li>
+              <li><span class="step-num">4.</span><span>Observe: the delete button does not appear</span></li>
+              <li><span class="step-num">5.</span><span>Repeat in Safari — the button appears and functions normally</span></li>
             </ol>
           </div>
           <div class="finding-block">
@@ -806,12 +806,16 @@
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
-            <p>Delete button is inaccessible on Brave. No browser compatibility notice or workaround is provided anywhere in the interface or documentation.</p>
+            <p>The delete button did not appear on Brave. No browser compatibility notice or workaround was provided anywhere in the interface or documentation.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Status Update</p>
+            <p>As of October 2026, the delete button appears in Brave and the original behavior can no longer be reproduced. What changed, and whether Brave Shields were involved, is not known.</p>
           </div>
           <div class="finding-block">
             <p class="finding-block-label">Rationale</p>
             <p><strong>Severity &mdash; High.</strong> A core file action is unavailable in the standard UI, with no notice, workaround, or fallback offered.</p>
-            <p><strong>Priority &mdash; Low.</strong> It was reproduced only on Brave; Safari renders the button correctly, so switching browsers works around it.</p>
+            <p><strong>Priority &mdash; Low.</strong> It was seen only on Brave, where Safari worked as a workaround, and it can no longer be reproduced.</p>
           </div>
         </div>
       </div>

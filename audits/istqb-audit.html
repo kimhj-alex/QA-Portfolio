@@ -658,7 +658,7 @@
             <span class="tag">macOS · Safari · istqb.org</span>
           </div>
           <p class="finding-summary">
-            The exam provider search filter on the ISTQB website produces inconsistent results depending on language selection, causing valid accredited providers to be excluded entirely. When searching with Country: Republic of Korea, Language: English, and Exam Type: CTFL, the Korea Software Testing Qualifications Board (KSTQB) does not appear in results despite being an accredited provider that offers CTFL. KSTQB only appears when the Exam Type filter is left blank, or when Language is changed to Korean. The filter is actively excluding a valid provider rather than narrowing results correctly, which is a logic error rather than a display issue. Users searching in English for a CTFL provider in Korea receive no results and have no indication that a valid provider exists.
+            The exam provider search filter on the ISTQB website produces inconsistent results depending on language selection, causing valid accredited providers to be excluded entirely. When searching with Country: Republic of Korea, Language: English, and Exam Type: CTFL, the Korea Software Testing Qualifications Board (KSTQB) does not appear in results despite being an accredited provider that offers CTFL. The Language filter refers to the exam language, and KSTQB offers the CTFL exam in English — I took it myself. KSTQB only appears when the Exam Type filter is left blank, or when Language is changed to Korean. The filter is actively excluding a valid provider rather than narrowing results correctly, which is a logic error rather than a display issue. Users searching in English for a CTFL provider in Korea receive no results and have no indication that a valid provider exists.
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>
@@ -761,7 +761,7 @@
             <span class="tag">macOS · Brave · glossary.istqb.org/en_US/quiz</span>
           </div>
           <p class="finding-summary">
-            When navigating to the Quiz page on the ISTQB Glossary site, the main content area is entirely empty on load and provides no guidance on how to proceed. The only prompt is light placeholder text reading "Select Syllabus" inside the top bar — the same element that functions as a search field on the Search page. This repurposed element gives no visual indication that its function has changed, and no instructional text explains that selecting a syllabus from it will load quiz content below. Once a syllabus is selected from the top bar, a specific quiz must then be selected from a dropdown, after which the quiz renders in the main grey content area. The interaction path is non-obvious and the page reads as blank and broken on first impression.
+            When navigating to the Quiz page on the ISTQB Glossary site, the main content area is empty on load apart from its heading and provides no guidance on how to proceed. The only prompt is light placeholder text reading "Select Syllabus" inside the top bar — the same element that functions as a search field on the Search page. This repurposed element gives no visual indication that its function has changed, and no instructional text explains that selecting a syllabus from it will load quiz content below. Once a syllabus is selected from the top bar, a specific quiz must then be selected from a dropdown, after which the quiz renders in the main grey content area. The interaction path is non-obvious and the page reads as blank and broken on first impression.
           </p>
           <div class="finding-block">
             <p class="finding-block-label">Steps to Reproduce</p>
@@ -769,7 +769,7 @@
               <li><span class="step-num">1.</span><span>Navigate to glossary.istqb.org</span></li>
               <li><span class="step-num">2.</span><span>Note the top bar functions as a search field with a magnifying glass icon and "Search..." placeholder text</span></li>
               <li><span class="step-num">3.</span><span>Click Quiz in the top navigation</span></li>
-              <li><span class="step-num">4.</span><span>Observe: the main content area is entirely empty except for the heading "Keywords Quiz" and the text "Select Syllabus"</span></li>
+              <li><span class="step-num">4.</span><span>Observe: the main content area is empty apart from the heading "Keywords Quiz"; the only prompt, "Select Syllabus," is in the top bar</span></li>
               <li><span class="step-num">5.</span><span>Observe: the top bar has changed from a search field to a dropdown labeled "Select Syllabus" with no explanation or instructional text</span></li>
               <li><span class="step-num">6.</span><span>Click the top dropdown and select a syllabus</span></li>
               <li><span class="step-num">7.</span><span>Observe: a quiz dropdown appears — select a quiz</span></li>

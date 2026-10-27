@@ -702,6 +702,11 @@
             <p class="finding-block-label">Actual Result</p>
             <p>No folder creation UI exists. The only method — typing a slash in the filename field — is entirely undisclosed in the interface. Users who don't already know this cannot proceed without external help.</p>
           </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Low.</strong> Nothing is broken: folders can be created by typing a slash in the filename field. The failure is that the method is undiscoverable from the interface.</p>
+            <p><strong>Priority &mdash; Medium.</strong> Anyone who doesn&rsquo;t already know the slash convention hits this the first time they try to organize files, and a placeholder hint or tooltip is a small fix.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -754,6 +759,11 @@
               Reliable workaround — delete old file, wait for full deployment, then upload replacement — is not documented or suggested by GitHub anywhere. Discovered through extended trial and error. Commit history shows the troubleshooting loop this causes in practice.
             </div>
           </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Medium.</strong> No data is lost and deployments do complete, but silent cancellations and unexplained propagation delays push users into a troubleshooting loop that makes the delay longer.</p>
+            <p><strong>Priority &mdash; High.</strong> This sits in the core GitHub Pages deployment flow. A warning before a new commit cancels an in-progress deployment would break the loop at its source.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -797,6 +807,11 @@
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
             <p>Delete button is inaccessible on Brave. No browser compatibility notice or workaround is provided anywhere in the interface or documentation.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; High.</strong> A core file action is unavailable in the standard UI, with no notice, workaround, or fallback offered.</p>
+            <p><strong>Priority &mdash; Low.</strong> It was reproduced only on Brave; Safari renders the button correctly, so switching browsers works around it.</p>
           </div>
         </div>
       </div>
@@ -842,6 +857,11 @@
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
             <p>TTL is not mentioned anywhere in GitHub's custom domain setup flow or supporting documentation. Users encountering the field must determine an appropriate value through external research.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Low.</strong> Setup can still be completed; the gap is a missing explanation, not a failure.</p>
+            <p><strong>Priority &mdash; Low.</strong> The TTL field lives in the DNS provider&rsquo;s form, not GitHub&rsquo;s interface. The most GitHub can add is a short note in its documentation.</p>
           </div>
         </div>
       </div>

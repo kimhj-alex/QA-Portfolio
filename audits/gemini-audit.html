@@ -718,6 +718,11 @@
             <p class="finding-block-label">Actual Result</p>
             <p>The room's geometry and function were corrected, but two specific personal items from the previous scene persisted unprompted. The correction was partially applied — enough to look complete at a glance, not enough to fully separate the two scenes.</p>
           </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Medium.</strong> An explicit correction was only partially applied: the room was fixed, but specific objects from the previous scene stayed in the image.</p>
+            <p><strong>Priority &mdash; Low.</strong> The error is cosmetic and visible in the output, so it can be caught on review before the image is used.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -763,6 +768,11 @@
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
             <p>The style reference was treated as the subject to reproduce, first exactly, then as a duplicated pair. Even after being shown the correct sprites directly, the correction was only partially applied: color differentiation existed, but was bound to the wrong character, and skin tone was not corrected for either.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Medium.</strong> The output is wrong but visibly so, and it can be rejected before use.</p>
+            <p><strong>Priority &mdash; High.</strong> Even with both sprite sheets and a direct correction, the characters&rsquo; hair colors were swapped and their skin tone lightened. On established characters these errors are easy to miss and costly if published.</p>
           </div>
         </div>
       </div>
@@ -810,6 +820,11 @@
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
             <p>The model's own instructions actively invited an unsupported action, using a template that named audio attachment as a real option. The true capability limitation was disclosed only after the described workflow was attempted and failed twice, at which point a substantially different, more complex external workflow was offered instead.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Medium.</strong> No output was produced and nothing was lost; the cost was time spent recording audio and building a prompt around a feature that doesn&rsquo;t exist.</p>
+            <p><strong>Priority &mdash; High.</strong> The tool&rsquo;s own guide described the unsupported option, so anyone following it will hit the same failure. Correcting the guide is a contained fix.</p>
           </div>
         </div>
       </div>
@@ -864,6 +879,11 @@
               A request to remove the tripod was correctly applied in one generation, then the tripod reappeared unprompted in a later generation, with no request to restore it. Separately, when the book was removed as requested, the visual edit was applied correctly — but the character's gestures still mimed holding and interacting with a book that was no longer on screen, and the fabricated audio still included page-flipping sound effects matching the removed prop. A single generation was internally inconsistent across its own visual, performance, and audio layers, each apparently generated without reference to what the others were actually depicting.
             </div>
           </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; High.</strong> Clips labeled &ldquo;silent&rdquo; contained coherent, fabricated speech that went unnoticed for two generations, and the model&rsquo;s own explanation misdescribed it.</p>
+            <p><strong>Priority &mdash; High.</strong> Anyone who publishes one of these clips ships speech they never wrote or reviewed.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -912,6 +932,11 @@
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
             <p>The main list and search operated on inconsistent views of the same underlying data — one showed nothing, the other showed everything correctly. Relaunching the app, tried multiple times, did not resolve the discrepancy. Only a full account switch forced the list to repopulate, and a second device on the same account was unaffected earlier the same day, indicating this was a local, device-specific fault rather than missing or corrupted account data.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Medium.</strong> The main list showed no chats, which looks like data loss, and relaunching the app didn&rsquo;t fix it.</p>
+            <p><strong>Priority &mdash; Low.</strong> No data was lost: search returned the full history, switching accounts restored the list, and the second device was unaffected.</p>
           </div>
         </div>
       </div>

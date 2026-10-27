@@ -681,6 +681,11 @@
             <p class="finding-block-label">Actual Result</p>
             <p>KSTQB is completely absent from results when Language is set to English and Exam Type is set to CTFL. The provider only appears when Exam Type is left blank or Language is changed to Korean. No message indicates that results may be incomplete or that a provider exists outside the current filter combination.</p>
           </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; High.</strong> A valid accredited provider is excluded for a legitimate filter combination, with no sign that results are incomplete. Users can reasonably conclude no provider exists. This is a logic error, not a display issue.</p>
+            <p><strong>Priority &mdash; High.</strong> Provider search is the path to booking an exam, and the failing filter combination is documented step by step, which makes it straightforward to trace.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -726,6 +731,11 @@
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
             <p>Spanish returns 73 fewer entries than English and Korean returns 152 fewer entries than English, with no indication that results are incomplete. The Mind Maps graph remains fully in English in both Spanish and Korean with no fallback notice or translation.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Medium.</strong> Spanish and Korean results are missing 73 and 152 entries respectively, and the Mind Maps stay in English, with no indication that anything is missing.</p>
+            <p><strong>Priority &mdash; Low.</strong> The complete English glossary is available to the same users, one language switch away.</p>
           </div>
         </div>
       </div>
@@ -774,6 +784,11 @@
             <p class="finding-block-label">Actual Result</p>
             <p>The main content area is empty on load with no instructional text. The top bar silently changes function from search field to syllabus selector with no visual distinction or explanation. The interaction path is non-obvious and the page reads as broken until the user discovers the repurposed top bar independently.</p>
           </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Low.</strong> The quiz works once a syllabus is selected. The problem is that the page reads as blank and broken on load.</p>
+            <p><strong>Priority &mdash; Medium.</strong> A line of instructional text in the empty content area would fix the first impression at very low cost.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -821,6 +836,11 @@
             <p class="finding-block-label">Actual Result</p>
             <p>The only access point for the PDF download is a small unlabeled printer icon with no tooltip. A color change on hover is the sole feedback. The download filename gives no indication it is a full glossary PDF. Users with no prior knowledge of the icon's function are likely to overlook it entirely.</p>
           </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; Low.</strong> The download works and produces a well-formatted PDF; the only problem is finding it.</p>
+            <p><strong>Priority &mdash; Low.</strong> It&rsquo;s a secondary feature, and a label or tooltip is a small improvement that can wait.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -866,6 +886,11 @@
           <div class="finding-block">
             <p class="finding-block-label">Actual Result</p>
             <p>The button has no aria-label, no tooltip, and no descriptive text. It cannot be reached via keyboard navigation. Users relying on assistive technology or keyboard-only navigation have no way to discover or access the accessibility widget. The button does not render at all in Safari, Chrome, or Firefox — users on these browsers have no access to the accessibility widget.</p>
+          </div>
+          <div class="finding-block">
+            <p class="finding-block-label">Rationale</p>
+            <p><strong>Severity &mdash; High.</strong> The button that opens the accessibility options has no label and can&rsquo;t be reached by keyboard, and it doesn&rsquo;t render at all in Safari, Chrome, or Firefox. The users who most need the widget can&rsquo;t open it.</p>
+            <p><strong>Priority &mdash; High.</strong> It blocks access to accessibility settings entirely, and an aria-label plus keyboard focus is a standard fix.</p>
           </div>
         </div>
       </div>
